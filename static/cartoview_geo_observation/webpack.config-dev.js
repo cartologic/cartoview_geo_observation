@@ -6,7 +6,7 @@ var plugins = [];
 var filename = '[name].bundle.js';
 module.exports = {
 	entry: {
-		geoCollect: path.join(APP_DIR, 'GeoCollect.jsx'),
+		geoObservation: path.join(APP_DIR, 'components','indexPage.jsx'),
 		config: path.join(APP_DIR, 'AppRender.jsx'),
 	},
 	output: {

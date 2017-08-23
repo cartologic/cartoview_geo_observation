@@ -5,6 +5,7 @@ import MapConfigTransformService from '@boundlessgeo/sdk/services/MapConfigTrans
 import PropTypes from 'prop-types'
 import React from 'react'
 import Spinner from "react-spinkit"
+import TopNav from './topNav'
 import UltimatePaginationBootstrap3 from './BootstrapPaginate'
 import WMSService from '@boundlessgeo/sdk/services/WMSService'
 import noImage from '../img/no-img.png'
@@ -86,6 +87,7 @@ export default class FeatureList extends React.Component {
             currentPage: 1,
             selectionLayerAdded: false,
             drawerOpen: true,
+            searching: false,
             config: { mapId: this.props.mapId }
         }
         this.map = new ol.Map( {
@@ -117,6 +119,7 @@ export default class FeatureList extends React.Component {
         } )
     }
     search = ( text ) => {
+        this.setState( { loading: true } )
         const layerInfo = this.props.layer.split( ":" )
         var request = new ol.format.WFS( ).writeGetFeature( {
             srsName: this.map.getView( ).getProjection( ).getCode( ),
@@ -124,10 +127,35 @@ export default class FeatureList extends React.Component {
             featurePrefix: layerInfo[ 0 ],
             outputFormat: 'application/json',
             featureTypes: [ layerInfo[ 1 ] ],
-            // filter: ol.format.filter.or(
-            //     ol.format.filter.like('name',
-            //         'Mississippi*')
-            // )
+            filter: ol.format.filter.like( this.props.filters.value,
+                '%' + text + '%', undefined, undefined,
+                undefined, false )
+        } )
+        fetch( '/geoserver/wfs', {
+            method: 'POST',
+            body: new XMLSerializer( ).serializeToString(
+                request )
+        } ).then( ( response ) => {
+            return response.json( )
+        } ).then( ( json ) => {
+            let features = new ol.format.GeoJSON( ).readFeatures(
+                json )
+            if ( json.totalFeatures == 0 ) {
+                this.setState( {
+                    features: features,
+                    loading: false,
+                    searching: true,
+                    totalFeatures: json.totalFeatures,
+                    currentPage: 0
+                } )
+            } else {
+                this.setState( {
+                    features: features,
+                    loading: false,
+                    searching: true,
+                    totalFeatures: json.totalFeatures
+                } )
+            }
         } )
     }
     init( map ) {
@@ -189,10 +217,6 @@ export default class FeatureList extends React.Component {
             } )
         }
     }
-    componentWillMount( ) {
-        this.updateMap( this.state.config )
-        this.search( )
-    }
     getLayers( layers ) {
         var children = [ ]
         layers.forEach( ( layer ) => {
@@ -235,9 +259,17 @@ export default class FeatureList extends React.Component {
                     totalFeatures: data.totalFeatures
                 } )
             } else {
-                this.setState( { features: features, loading: false } )
+                this.setState( {
+                    features: features,
+                    loading: false,
+                    search: false
+                } )
             }
         } )
+    }
+    startSearch = ( ) => {
+        this.refs.search.value = ""
+        this.loadfeatures( )
     }
     backToList( ) {
         this.featureCollection.clear( )
@@ -259,27 +291,31 @@ export default class FeatureList extends React.Component {
         this.loadfeatures( )
         this.init( this.map )
     }
+    componentWillMount( ) {
+        this.updateMap( this.state.config )
+    }
     render( ) {
         let { loading } = this.state
         return (
             <div>
-                {!this.state.selectMode && <div style={{ margin: 10 }} className="col-xs-12 col-sm-12 col-md-12 col-lg-12"><form>
+                <TopNav currentComponent="List" toggleComponent={x => this.props.toggleComponent(x)} />
+                {!this.state.selectMode && <div style={{ margin: 10 }} className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     <div className="input-group">
-                        <input type="text" className="form-control" placeholder="Search" required />
+                        <input ref="search" type="text" className="form-control" placeholder="Search" required />
                         <span className="input-group-btn">
-                            <button type="submit" className="btn btn-default"><i className="fa fa-search" aria-hidden="true"></i></button>
+                            <a href="javascript:;" onClick={() => this.search(this.refs.search.value)} className="btn btn-default"><i className="fa fa-search" aria-hidden="true"></i></a>
+                            <a href="javascript:;" onClick={() => this.startSearch()} className="btn btn-default"><i className="fa fa-times" aria-hidden="true"></i></a>
                         </span>
                     </div>
-                </form>
                 </div>
                 }
+
                 {loading && <div style={{ textAlign: "center" }} className="col-xs-12 col-sm-12 col-md-12"><Spinner className="loading-center" name="line-scale-party" color="steelblue" /></div>}
-                {!this.state.selectMode && this.state.features.map((feature, i) => {
+                {!this.state.selectMode && this.state.features.length >0  && this.state.features.map((feature, i) => {
                     return <div key={i}><div onClick={this.zoomToFeature.bind(this, feature)} className="row" >
                         <div className="col-md-2" style={{ textAlign: "center" }}>
                             <Img
                                 src={[
-                                    'https://www.example.com/foo.jpg',
                                     noImage
                                 ]}
                                 loader={<Spinner className="loading-center" name="line-scale-party" color="steelblue" />}
@@ -296,8 +332,11 @@ export default class FeatureList extends React.Component {
                         <hr />
                     </div>
                 })}
+                {!loading && !this.state.selectMode && this.state.searching && this.state.features.length == 0 && <div className="text-center">
+                    <h3>No Features Found</h3>
+                    </div>}
 
-                {!loading && !this.state.selectMode && <div style={{ textAlign: "center" }} className="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-md-offset-3"><UltimatePaginationBootstrap3
+                {!loading && !this.state.selectMode && this.state.features.length >0  &&<div style={{ textAlign: "center" }} className="col-xs-12 col-sm-12 col-md-6 col-lg-6 col-md-offset-3"><UltimatePaginationBootstrap3
                     totalPages={Math.ceil(this.state.totalFeatures / this.state.perPage)}
                     currentPage={this.state.currentPage}
                     onChange={number => this.setState({

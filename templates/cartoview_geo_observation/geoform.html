@@ -29,7 +29,7 @@
 {% endblock %}
 {% block extra_script %}
 
-    <script src="{{ STATIC_URL }}cartoview_geo_observation/dist/geoCollect.bundle.js?v={{v}}"></script>
+    <script src="{{ STATIC_URL }}cartoview_geo_observation/dist/geoObservation.bundle.js?v={{v}}"></script>
     <script type="text/javascript">
       var URLS = {
         geoserver: "{{ GEOSERVER_BASE_URL }}",
@@ -53,7 +53,7 @@
       props.geoserverUrl = URLS.geoserver
       props.uploadUrl = ""
       props.username="{{request.user.username}}"
-      GeoCollect.show('main-ct', props);
+      GeoObservation.show('main-ct', props);
     </script>
 {% endblock %}
 
