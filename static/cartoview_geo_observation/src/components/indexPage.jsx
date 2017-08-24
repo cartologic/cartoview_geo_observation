@@ -25,7 +25,6 @@ export default class IndexPage extends Component {
             logo
         } = this.props
         let { currentComponent } = this.state
-        console.log(currentComponent)
         return (
             <div className="container-fluid" style={{ paddingBottom: 50, paddingTop: 50 }}>
                 {currentComponent === "Index" && <div>
@@ -54,9 +53,9 @@ export default class IndexPage extends Component {
                         <div className="col-xs-12 col-sm-12 col-md-12">
                             <div className="list-group">
                                 <a onClick={()=> this.toggleComponent("List")} href="javascript:;" className="list-group-item"><i className="fa fa-list" aria-hidden="true"></i> List</a>
-                                <a onClick={()=> this.toggleComponent("Map")} href="javascript:;" className="list-group-item"><i className="fa fa-map" aria-hidden="true"></i> Map</a>
+                                {/* <a onClick={()=> this.toggleComponent("Map")} href="javascript:;" className="list-group-item"><i className="fa fa-map" aria-hidden="true"></i> Map</a> */}
                                 <a onClick={()=> this.toggleComponent("GeoCollect")} href="javascript:;" className="list-group-item"><i className="fa fa-plus-circle" aria-hidden="true"></i>  New Observation</a>
-                                <a onClick={()=> this.toggleComponent("Instances")} href="javascript:;" className="list-group-item"><i className="fa fa-globe" aria-hidden="true"></i> Other Observations</a>
+                                <a href={`/apps/appinstances/?app__title=GeoObservation`} className="list-group-item"><i className="fa fa-globe" aria-hidden="true"></i> Other Observations</a>
                             </div>
                         </div>
 

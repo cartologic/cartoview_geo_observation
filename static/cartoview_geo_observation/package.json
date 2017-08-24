@@ -1,5 +1,5 @@
 {
-  "name": "CartoviewMapViewerClient",
+  "name": "CartoviewGeoObservation",
   "version": "1.0.0",
   "description": "Cartoview Map Viewer Client",
   "main": "index.js",
@@ -30,6 +30,7 @@
     "react-paginate": "^4.4.3",
     "react-router-dom": "^4.1.2",
     "react-select": "^1.0.0-rc.5",
+    "react-slick": "^0.14.11",
     "react-spinkit": "^3.0.0",
     "react-tag-autocomplete": "^5.4.1",
     "react-tap-event-plugin": "^2.0.1",
