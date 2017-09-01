@@ -14,12 +14,12 @@ export function attachmentFilesIsLoading( state = false, action ) {
         return state
     }
 }
-export function totalFeatures( state, action ) {
+export function totalFeatures( state=0, action ) {
     switch ( action.type ) {
     case 'TOTAL_FEATURES':
         return action.totalFeatures
     default:
-        return 0
+        return state
     }
 }
 export function selectedFeatures( state=[], action ) {
@@ -67,6 +67,14 @@ export function searchMode( state=false, action ) {
     switch ( action.type ) {
     case 'SEARCH_MODE':
         return action.searchMode
+    default:
+        return state
+    }
+}
+export function selectMode( state=false, action ) {
+    switch ( action.type ) {
+    case 'SELECT_MODE':
+        return action.selectMode
     default:
         return state
     }

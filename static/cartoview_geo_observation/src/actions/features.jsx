@@ -1,5 +1,5 @@
 import ol from 'openlayers'
-import { store } from '../store/configureStore';
+import { store } from '../store/configureStore'
 import { wfsQueryBuilder } from "../helpers/helpers.jsx"
 export function featuresIsLoading( bool ) {
     return {
@@ -23,6 +23,12 @@ export function searchMode( bool ) {
     return {
         type: 'SEARCH_MODE',
         searchMode: bool
+    }
+}
+export function selectMode( bool ) {
+    return {
+        type: 'SELECT_MODE',
+        selectMode: bool
     }
 }
 export function totalFeatures( totalFeatures ) {
@@ -82,7 +88,9 @@ export function getFeatures( url = "/geoserver/", typeName, count, startIndex ) 
                             .getProjection( )
                     } )
                 const total = data.totalFeatures
-                dispatch( totalFeatures( total ) )
+                if ( store.getState( ).totalFeatures == 0 ) {
+                    dispatch( totalFeatures( total ) )
+                }
                 dispatch( getFeaturesSuccess( features ) )
             } )
     }
@@ -98,7 +106,8 @@ export const search = ( url = '/geoserver/wfs', text, layerNameSpace,
         dispatch( searchResultIsLoading( true ) )
         dispatch( searchMode( true ) )
         var request = new ol.format.WFS( ).writeGetFeature( {
-            srsName: this.map.getView( ).getProjection( ).getCode( ),
+            srsName: store.getState( ).map.getView( ).getProjection( )
+                .getCode( ),
             featureNS: 'http://www.geonode.org/',
             featurePrefix: layerNameSpace,
             outputFormat: 'application/json',
@@ -118,7 +127,9 @@ export const search = ( url = '/geoserver/wfs', text, layerNameSpace,
             let features = new ol.format.GeoJSON( ).readFeatures(
                 json )
             const total = json.totalFeatures
-            dispatch( searchTotalFeatures( total ) )
+            if ( store.getState( ).searchTotalFeatures == 0 ) {
+                dispatch( searchTotalFeatures( total ) )
+            }
             dispatch( searchSuccess( features ) )
         } )
     }

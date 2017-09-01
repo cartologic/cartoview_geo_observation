@@ -7,6 +7,7 @@ import {
     searchResult,
     searchResultIsLoading,
     searchTotalFeatures,
+    selectMode,
     selectedFeatures,
     totalFeatures
 } from './features'
@@ -19,6 +20,7 @@ export default combineReducers( {
     featureIsLoading,
     totalFeatures,
     map,
+    selectMode,
     files,
     searchMode,
     searchResult,

@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import { getFeatures, loadAttachments, search } from '../actions/features';
 
 import FeatureList from './FeatureList.jsx'
 import GeoCollect from '../GeoCollect'
@@ -8,7 +7,6 @@ import PropTypes from 'prop-types'
 import { Provider } from 'react-redux';
 import ReactDOM from 'react-dom'
 import Spinner from "react-spinkit"
-import { connect } from 'react-redux';
 import noImage from '../img/no-img.png'
 import { store } from '../store/configureStore'
 
@@ -22,11 +20,7 @@ class IndexPage extends Component {
     toggleComponent = ( component ) => {
         this.setState( { currentComponent: component } )
     }
-    componentDidMount( ) {
-        this.props.getFeatures( "" )
-    }
     render( ) {
-        console.log( this.props, store.getState( ) )
         let {
             title,
             logo
@@ -79,30 +73,12 @@ IndexPage.propTypes = {
     logo: PropTypes.object.isRequired,
     description: PropTypes.string.isRequired
 }
-const mapStateToProps = ( state ) => {
-    return {
-        features: state.features,
-        isLoading: state.featureIsLoading
-    }
-}
-const mapDispatchToProps = ( dispatch ) => {
-    return {
-        getFeatures: ( url = "/geoserver" ) => dispatch( getFeatures( undefined,
-            "geonode:nyc_rat_sighting_2016", 20, 0 ) ),
-        search: ( url = '/geoserver/wfs', text, layerNameSpace,
-            selectedLayerName, property ) => dispatch( search( url =
-            '/geoserver/wfs', text, layerNameSpace,
-            selectedLayerName, property ) ),
-        loadAttachments: ( selectedLayerName ) => dispatch(
-            loadAttachments( selectedLayerName ) )
-    }
-}
-const Basic = connect( mapStateToProps, mapDispatchToProps )( IndexPage )
+
 global.GeoObservation = {
     show: ( el, props ) => {
         ReactDOM.render(
             <Provider store={store}>
-            <Basic configProps={props} description={props.formAbstract} logo={props.logo} title={props.formTitle} /></Provider>,
+            <IndexPage configProps={props} description={props.formAbstract} logo={props.logo} title={props.formTitle} /></Provider>,
             document.getElementById( el ) )
     }
 }
