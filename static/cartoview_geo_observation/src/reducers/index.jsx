@@ -7,6 +7,7 @@ import {
     searchResult,
     searchResultIsLoading,
     searchTotalFeatures,
+    selectedFeatures,
     totalFeatures
 } from './features'
 
@@ -23,6 +24,7 @@ export default combineReducers( {
     searchResult,
     searchResultIsLoading,
     searchTotalFeatures,
-    attachmentFilesIsLoading
+    attachmentFilesIsLoading,
+    selectedFeatures
 
 } )

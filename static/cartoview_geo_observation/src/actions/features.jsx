@@ -55,6 +55,12 @@ export function searchSuccess( searchResult ) {
         searchResult
     }
 }
+export function selectedFeatures( selectedFeatures ) {
+    return {
+        type: 'SET_SELECTED_FEATURES',
+        selectedFeatures
+    }
+}
 export function getFeatures( url = "/geoserver/", typeName, count, startIndex ) {
     return ( dispatch ) => {
         dispatch( featuresIsLoading( true ) )

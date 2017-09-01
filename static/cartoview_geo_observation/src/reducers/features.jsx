@@ -22,6 +22,15 @@ export function totalFeatures( state, action ) {
         return 0
     }
 }
+export function selectedFeatures( state=[], action ) {
+    switch ( action.type ) {
+    case 'SET_SELECTED_FEATURES':
+        return action.selectedFeatures
+    default:
+        return state
+    }
+}
+
 export function features( state = [ ], action ) {
     switch ( action.type ) {
     case 'GET_FEATURES_SUCCESS':
