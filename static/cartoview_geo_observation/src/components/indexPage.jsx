@@ -4,11 +4,16 @@ import FeatureList from './FeatureList.jsx'
 import GeoCollect from '../GeoCollect'
 import Img from 'react-image'
 import PropTypes from 'prop-types'
+import { Provider } from 'react-redux';
 import ReactDOM from 'react-dom'
 import Spinner from "react-spinkit"
+import { connect } from 'react-redux';
+import {features} from '../actions/features';
+import { getFeatures } from '../actions/features';
 import noImage from '../img/no-img.png'
+import {store} from '../store/configureStore'
 
-export default class IndexPage extends Component {
+class IndexPage extends Component {
     constructor( props ) {
         super( props )
         this.state = {
@@ -18,8 +23,11 @@ export default class IndexPage extends Component {
     toggleComponent = ( component ) => {
         this.setState( { currentComponent: component } )
     }
-    componentDidMount( ) {}
+    componentDidMount( ) {
+        this.props.getFeatures("")
+    }
     render( ) {
+        console.log(this.props,store.getState())
         let {
             title,
             logo
@@ -72,10 +80,23 @@ IndexPage.propTypes = {
     logo: PropTypes.object.isRequired,
     description: PropTypes.string.isRequired
 }
+const mapStateToProps = (state) => {
+    return {
+        features: state.features,
+        isLoading: state.featuresIsLoading
+    }
+}
+const mapDispatchToProps = (dispatch) => {
+    return {
+        getFeatures: (url) => dispatch(getFeatures("/geoserver","geonode:nyc_rat_sighting_2016",20,0))
+    }
+}
+const Basic = connect(mapStateToProps, mapDispatchToProps)(IndexPage)
 global.GeoObservation = {
     show: ( el, props ) => {
         ReactDOM.render(
-            <IndexPage configProps={props} description={props.formAbstract} logo={props.logo} title={props.formTitle} />,
+            <Provider store={store}>
+            <Basic configProps={props} description={props.formAbstract} logo={props.logo} title={props.formTitle} /></Provider>,
             document.getElementById( el ) )
     }
 }
