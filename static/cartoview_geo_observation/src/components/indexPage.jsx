@@ -4,11 +4,13 @@ import FeatureList from './FeatureList.jsx'
 import GeoCollect from '../GeoCollect'
 import Img from 'react-image'
 import PropTypes from 'prop-types'
+import { Provider } from 'react-redux';
 import ReactDOM from 'react-dom'
 import Spinner from "react-spinkit"
 import noImage from '../img/no-img.png'
+import { store } from '../store/configureStore'
 
-export default class IndexPage extends Component {
+class IndexPage extends Component {
     constructor( props ) {
         super( props )
         this.state = {
@@ -18,7 +20,6 @@ export default class IndexPage extends Component {
     toggleComponent = ( component ) => {
         this.setState( { currentComponent: component } )
     }
-    componentDidMount( ) {}
     render( ) {
         let {
             title,
@@ -72,10 +73,12 @@ IndexPage.propTypes = {
     logo: PropTypes.object.isRequired,
     description: PropTypes.string.isRequired
 }
+
 global.GeoObservation = {
     show: ( el, props ) => {
         ReactDOM.render(
-            <IndexPage configProps={props} description={props.formAbstract} logo={props.logo} title={props.formTitle} />,
+            <Provider store={store}>
+            <IndexPage configProps={props} description={props.formAbstract} logo={props.logo} title={props.formTitle} /></Provider>,
             document.getElementById( el ) )
     }
 }
