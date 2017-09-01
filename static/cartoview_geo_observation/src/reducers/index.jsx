@@ -1,4 +1,14 @@
-import { featureIsLoading, features, totalFeatures } from './features'
+import {
+    attachmentFilesIsLoading,
+    featureIsLoading,
+    features,
+    files,
+    searchMode,
+    searchResult,
+    searchResultIsLoading,
+    searchTotalFeatures,
+    totalFeatures
+} from './features'
 
 import { combineReducers } from 'redux'
 import { map } from './map'
@@ -7,5 +17,12 @@ export default combineReducers( {
     features,
     featureIsLoading,
     totalFeatures,
-    map
+    map,
+    files,
+    searchMode,
+    searchResult,
+    searchResultIsLoading,
+    searchTotalFeatures,
+    attachmentFilesIsLoading
+
 } )

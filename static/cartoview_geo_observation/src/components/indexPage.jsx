@@ -1,4 +1,5 @@
 import React, { Component } from 'react'
+import { getFeatures, loadAttachments, search } from '../actions/features';
 
 import FeatureList from './FeatureList.jsx'
 import GeoCollect from '../GeoCollect'
@@ -8,10 +9,8 @@ import { Provider } from 'react-redux';
 import ReactDOM from 'react-dom'
 import Spinner from "react-spinkit"
 import { connect } from 'react-redux';
-import {features} from '../actions/features';
-import { getFeatures } from '../actions/features';
 import noImage from '../img/no-img.png'
-import {store} from '../store/configureStore'
+import { store } from '../store/configureStore'
 
 class IndexPage extends Component {
     constructor( props ) {
@@ -24,10 +23,10 @@ class IndexPage extends Component {
         this.setState( { currentComponent: component } )
     }
     componentDidMount( ) {
-        this.props.getFeatures("")
+        this.props.getFeatures( "" )
     }
     render( ) {
-        console.log(this.props,store.getState())
+        console.log( this.props, store.getState( ) )
         let {
             title,
             logo
@@ -80,18 +79,25 @@ IndexPage.propTypes = {
     logo: PropTypes.object.isRequired,
     description: PropTypes.string.isRequired
 }
-const mapStateToProps = (state) => {
+const mapStateToProps = ( state ) => {
     return {
         features: state.features,
-        isLoading: state.featuresIsLoading
+        isLoading: state.featureIsLoading
     }
 }
-const mapDispatchToProps = (dispatch) => {
+const mapDispatchToProps = ( dispatch ) => {
     return {
-        getFeatures: (url) => dispatch(getFeatures("/geoserver","geonode:nyc_rat_sighting_2016",20,0))
+        getFeatures: ( url = "/geoserver" ) => dispatch( getFeatures( undefined,
+            "geonode:nyc_rat_sighting_2016", 20, 0 ) ),
+        search: ( url = '/geoserver/wfs', text, layerNameSpace,
+            selectedLayerName, property ) => dispatch( search( url =
+            '/geoserver/wfs', text, layerNameSpace,
+            selectedLayerName, property ) ),
+        loadAttachments: ( selectedLayerName ) => dispatch(
+            loadAttachments( selectedLayerName ) )
     }
 }
-const Basic = connect(mapStateToProps, mapDispatchToProps)(IndexPage)
+const Basic = connect( mapStateToProps, mapDispatchToProps )( IndexPage )
 global.GeoObservation = {
     show: ( el, props ) => {
         ReactDOM.render(

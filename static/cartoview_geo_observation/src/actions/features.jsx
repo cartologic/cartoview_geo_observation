@@ -7,10 +7,34 @@ export function featuresIsLoading( bool ) {
         isLoading: bool
     }
 }
+export function searchResultIsLoading( bool ) {
+    return {
+        type: 'SEARCH_RESULT_IS_LOADING',
+        isLoading: bool
+    }
+}
+export function attachmentFilesIsLoading( bool ) {
+    return {
+        type: 'ATTACHMENT_FILES_IS_LOADING',
+        isLoading: bool
+    }
+}
+export function searchMode( bool ) {
+    return {
+        type: 'SEARCH_MODE',
+        searchMode: bool
+    }
+}
 export function totalFeatures( totalFeatures ) {
     return {
         type: 'TOTAL_FEATURES',
         totalFeatures
+    }
+}
+export function searchTotalFeatures( searchTotalFeatures ) {
+    return {
+        type: 'SEARCH_TOTAL_FEATURES',
+        searchTotalFeatures
     }
 }
 export function getFeaturesSuccess( features ) {
@@ -19,7 +43,19 @@ export function getFeaturesSuccess( features ) {
         features
     }
 }
-export function getFeatures( url, typeName, count, startIndex ) {
+export function getAttachmentFilesSuccess( files ) {
+    return {
+        type: 'GET_ATTACHMENT_FILES_SUCCESS',
+        files
+    }
+}
+export function searchSuccess( searchResult ) {
+    return {
+        type: 'SEARCH_SUCCESS',
+        searchResult
+    }
+}
+export function getFeatures( url = "/geoserver/", typeName, count, startIndex ) {
     return ( dispatch ) => {
         dispatch( featuresIsLoading( true ) )
         const requestUrl = wfsQueryBuilder( url, {
@@ -43,5 +79,54 @@ export function getFeatures( url, typeName, count, startIndex ) {
                 dispatch( totalFeatures( total ) )
                 dispatch( getFeaturesSuccess( features ) )
             } )
+    }
+}
+export const search = ( url = '/geoserver/wfs', text, layerNameSpace,
+    selectedLayerName, property ) => {
+    return ( dispatch ) => {
+        /* 
+        Openlayer build request to avoid errors
+        undefined passed to filter to skip paramters and
+        use default values
+        */
+        dispatch( searchResultIsLoading( true ) )
+        dispatch( searchMode( true ) )
+        var request = new ol.format.WFS( ).writeGetFeature( {
+            srsName: this.map.getView( ).getProjection( ).getCode( ),
+            featureNS: 'http://www.geonode.org/',
+            featurePrefix: layerNameSpace,
+            outputFormat: 'application/json',
+            featureTypes: [ selectedLayerName ],
+            filter: ol.format.filter.like( property, '%' +
+                text + '%', undefined, undefined,
+                undefined, false )
+        } )
+        fetch( url, {
+            method: 'POST',
+            body: new XMLSerializer( ).serializeToString(
+                request )
+        } ).then( ( response ) => {
+            return response.json( )
+        } ).then( ( json ) => {
+            dispatch( searchResultIsLoading( false ) )
+            let features = new ol.format.GeoJSON( ).readFeatures(
+                json )
+            const total = json.totalFeatures
+            dispatch( searchTotalFeatures( total ) )
+            dispatch( searchSuccess( features ) )
+        } )
+    }
+}
+export const loadAttachments = ( selectedLayerName ) => {
+    return ( dispatch ) => {
+        dispatch( attachmentFilesIsLoading( true ) )
+        fetch(
+            `/apps/cartoview_attachment_manager/${selectedLayerName}/file`
+        ).then( ( response ) => response.json( ) ).then( ( data ) => {
+            dispatch( attachmentFilesIsLoading( false ) )
+            dispatch( getAttachmentFilesSuccess( data ) )
+        } ).catch( ( error ) => {
+            throw Error( error )
+        } )
     }
 }
