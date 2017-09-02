@@ -1,5 +1,5 @@
 import ol from 'openlayers'
-import { store } from '../store/configureStore'
+import { viewStore } from '../store/stores'
 import { wfsQueryBuilder } from "../helpers/helpers.jsx"
 export function featuresIsLoading( bool ) {
     return {
@@ -84,11 +84,11 @@ export function getFeatures( url = "/geoserver/", typeName, count, startIndex ) 
                 dispatch( featuresIsLoading( false ) );
                 let features = new ol.format.GeoJSON( ).readFeatures(
                     data, {
-                        featureProjection: store.getState( ).map.getView( )
+                        featureProjection: viewStore.getState( ).map.getView( )
                             .getProjection( )
                     } )
                 const total = data.totalFeatures
-                if ( store.getState( ).totalFeatures == 0 ) {
+                if ( viewStore.getState( ).totalFeatures == 0 ) {
                     dispatch( totalFeatures( total ) )
                 }
                 dispatch( getFeaturesSuccess( features ) )
@@ -106,7 +106,7 @@ export const search = ( url = '/geoserver/wfs', text, layerNameSpace,
         dispatch( searchResultIsLoading( true ) )
         dispatch( searchMode( true ) )
         var request = new ol.format.WFS( ).writeGetFeature( {
-            srsName: store.getState( ).map.getView( ).getProjection( )
+            srsName: viewStore.getState( ).map.getView( ).getProjection( )
                 .getCode( ),
             featureNS: 'http://www.geonode.org/',
             featurePrefix: layerNameSpace,
@@ -127,7 +127,7 @@ export const search = ( url = '/geoserver/wfs', text, layerNameSpace,
             let features = new ol.format.GeoJSON( ).readFeatures(
                 json )
             const total = json.totalFeatures
-            if ( store.getState( ).searchTotalFeatures == 0 ) {
+            if ( viewStore.getState( ).searchTotalFeatures == 0 ) {
                 dispatch( searchTotalFeatures( total ) )
             }
             dispatch( searchSuccess( features ) )

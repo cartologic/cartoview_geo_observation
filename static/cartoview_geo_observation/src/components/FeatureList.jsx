@@ -23,7 +23,7 @@ import UltimatePaginationBootstrap3 from './BootstrapPaginate'
 import WMSService from '@boundlessgeo/sdk/services/WMSService'
 import { connect } from 'react-redux';
 import ol from 'openlayers'
-import { store } from '../store/configureStore'
+import { viewStore } from '../store/stores'
 
 const image = new ol.style.Circle( {
     radius: 5,
@@ -97,7 +97,7 @@ class FeatureList extends React.Component {
             selectionLayerAdded: false,
             config: { mapId: this.props.mapId }
         }
-        this.map = store.getState( ).map
+        this.map = viewStore.getState( ).map
         this.featureCollection = new ol.Collection( )
         this.selectLayer = new ol.layer.Vector( {
             source: new ol.source.Vector( { features: this.featureCollection } ),

@@ -8,7 +8,7 @@ import { Provider } from 'react-redux';
 import ReactDOM from 'react-dom'
 import Spinner from "react-spinkit"
 import noImage from '../img/no-img.png'
-import { store } from '../store/configureStore'
+import { viewStore } from '../store/stores'
 
 class IndexPage extends Component {
     constructor( props ) {
@@ -77,7 +77,7 @@ IndexPage.propTypes = {
 global.GeoObservation = {
     show: ( el, props ) => {
         ReactDOM.render(
-            <Provider store={store}>
+            <Provider store={viewStore}>
             <IndexPage configProps={props} description={props.formAbstract} logo={props.logo} title={props.formTitle} /></Provider>,
             document.getElementById( el ) )
     }
