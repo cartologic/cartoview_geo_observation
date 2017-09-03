@@ -10,6 +10,7 @@ import ListOptions from "./components/ListOptions.jsx"
 import NavigationTools from './components/NavigationTools.jsx'
 import Navigator from './components/Navigator.jsx'
 import ResourceSelector from './components/ResourceSelector.jsx'
+
 export default class Edit extends Component {
     constructor( props ) {
         super( props )
@@ -56,29 +57,7 @@ export default class Edit extends Component {
                     }
                 }
             }, {
-                label: "General ",
-                component: General,
-                props: {
-                    state: this.state,
-                    keywords: this.props.keywords,
-                    urls: this.props.config.urls,
-                    instance: this.state.selectedResource,
-                    config: this.props.config.instance ? this.props.config
-                        .instance.config : null,
-                    onComplete: ( basicConfig ) => {
-                        let { step } = this.state
-                        this.setState( {
-                            config: Object.assign( this.state
-                                .config, basicConfig )
-                        } )
-                        this.goToStep( ++step )
-                    },
-                    onPrevious: ( ) => {
-                        this.onPrevious( )
-                    }
-                }
-            }, {
-                label: "Select Layer",
+                label: "Select Layer && Customize list",
                 component: ListOptions,
                 props: {
                     map: this.state.selectedResource,
@@ -91,7 +70,7 @@ export default class Edit extends Component {
                     onComplete: ( listConfig ) => {
                         let { step } = this.state
                         let currentConfig = this.state.config
-                        let newConfig = Object.assign(
+                        Object.assign(
                             currentConfig, listConfig )
                         this.setState( {
                             config: currentConfig
@@ -137,6 +116,28 @@ export default class Edit extends Component {
                         this.setState( {
                             config: config
                         }, this.goToStep( ++step ) )
+                    },
+                    onPrevious: ( ) => {
+                        this.onPrevious( )
+                    }
+                }
+            }, {
+                label: "General ",
+                component: General,
+                props: {
+                    state: this.state,
+                    keywords: this.props.keywords,
+                    urls: this.props.config.urls,
+                    instance: this.state.selectedResource,
+                    config: this.props.config.instance ? this.props.config
+                        .instance.config : null,
+                    onComplete: ( basicConfig ) => {
+                        let { step } = this.state
+                        this.setState( {
+                            config: Object.assign( this.state
+                                .config, basicConfig )
+                        } )
+                        this.goToStep( ++step )
                     },
                     onPrevious: ( ) => {
                         this.onPrevious( )
