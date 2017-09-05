@@ -76,6 +76,7 @@ export function getFeatures( url = "/geoserver/", typeName, count, startIndex ) 
             request: 'GetFeature',
             typeNames: typeName,
             outputFormat: 'json',
+            srsName:viewStore.getState( ).map.getView( ).getProjection( ).getCode(),
             count,
             startIndex
         } )

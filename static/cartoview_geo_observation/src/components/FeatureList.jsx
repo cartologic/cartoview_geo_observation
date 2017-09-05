@@ -73,6 +73,21 @@ const isWMSLayer = ( layer ) => {
     return layer.getSource( ) instanceof ol.source.TileWMS || layer.getSource( ) instanceof ol
         .source.ImageWMS
 }
+const wmsGetFeatureInfoFormats = {
+	'application/json': new ol.format.GeoJSON(),
+	'application/vnd.ogc.gml': new ol.format.WMSGetFeatureInfo()
+};
+const getFeatureInfoUrl=(layer, coordinate, view, infoFormat)=> {
+    var resolution = view.getResolution(), projection = view.getProjection();
+    var url = layer.getSource().getGetFeatureInfoUrl(
+      coordinate,
+      resolution,
+      projection, {
+        'INFO_FORMAT': infoFormat
+      }
+    );
+    return url
+}
 const getWMSLayer = ( name, layers ) => {
     var wmsLayer = null
     layers.forEach( ( layer ) => {
@@ -118,39 +133,43 @@ class FeatureList extends React.Component {
     init( map ) {
         map.on( 'singleclick', ( e ) => {
             document.body.style.cursor = "progress"
-            WMSService.getFeatureInfo( getWMSLayer( this.props
-                    .layer, map.getLayers( ).getArray( ) ),
-                e.coordinate, map, 'application/json', (
-                    result ) => {
-                    if ( result.features.length == 1 ) {
-                        result.features[ 0 ].getGeometry( )
-                            .transform( 'EPSG:4326', this.map
-                                .getView( ).getProjection( )
-                            )
-                        this.zoomToFeature( result.features[
-                            0 ] )
+            const view = map.getView();
+            const url = getFeatureInfoUrl(getWMSLayer(this.props
+                .layer, map.getLayers( ).getArray( )), e.coordinate,view, 'application/json')
+            fetch( url ).then(( response ) => response.json( )).then(( result ) => {
+                const features=wmsGetFeatureInfoFormats['application/json'].readFeatures(result)
+                const crs=result.crs.properties.name.split(":").pop()
+                if ( features.length == 1 ) {
+                    if(proj4.defs('EPSG:' + crs)){
+                        features[0].getGeometry( ).transform('EPSG:'+crs, this.map.getView( ).getProjection( ));
+                        this.zoomToFeature(features[0])
                         this.props.setSelectedFeatures(
-                            result.features )
+                            features )
                         this.props.setSelectMode( true )
-                    } else if ( result.features.length > 1 ) {
-                        let transformedFeatures = [ ]
-                        result.features.forEach( ( feature ) => {
-                            feature.getGeometry( )
-                                .transform(
-                                    'EPSG:4326',
-                                    this.map.getView( )
-                                    .getProjection( )
-                                )
-                            transformedFeatures.push(
-                                feature )
-                        } )
-                        this.setState( {
-                            selectedFeatures: transformedFeatures,
-                            selectMode: true
-                        } )
+                    }else{
+                        fetch("http://epsg.io/?format=json&q=" + crs).then(response=>response.json()).then(projres=>{
+                            proj4.defs('EPSG:' + crs, projres.results[0].proj4)
+                            features[0].getGeometry( ).transform('EPSG:'+crs, this.map.getView( ).getProjection( ));
+                            this.zoomToFeature(features[0])
+                            this.props.setSelectedFeatures(
+                                features )
+                            this.props.setSelectMode( true )
+                        })
                     }
-                    document.body.style.cursor = "default"
-                } )
+                    
+                    
+                } else if ( features.length > 1 ) {
+                    let transformedFeatures = [ ]
+                    features.forEach(( feature ) => {
+                        feature.getGeometry( ).transform('EPSG:'+crs, this.map.getView( ).getProjection( ));
+                        transformedFeatures.push( feature )
+                    });
+                    this.props.setSelectedFeatures(
+                        features )
+                    this.props.setSelectMode( true )
+                }
+                document.body.style.cursor = "default";
+            })
         } )
     }
     updateMap( config ) {
