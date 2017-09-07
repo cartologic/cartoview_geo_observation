@@ -11,7 +11,6 @@ import WFSClient from './utils/WFSClient.jsx'
 import { getCRSFToken } from './helpers/helpers.jsx'
 import ol from 'openlayers'
 import t from 'tcomb-form'
-
 // check if number is int
 const Int = t.refinement( t.Number, ( n ) => n % 1 == 0 )
 const getSRSName = ( geojson ) => {
@@ -20,10 +19,12 @@ const getSRSName = ( geojson ) => {
     return "EPSG:" + srs
 }
 class AttrsForm extends Component {
-    getValue( ) {
-        return this.form.getValue( )
+    state = {
+        schema: {},
+        fields: {},
+        value: {}
     }
-    render( ) {
+    buildForm = ( ) => {
         const { attributes } = this.props
         const schema = {},
             fields = {},
@@ -65,6 +66,24 @@ class AttrsForm extends Component {
                 }
             }
         } )
+        this.setState( {
+            schema,
+            value,
+            fields
+        } )
+    }
+    componentWillMount( ) {
+        this.buildForm( )
+    }
+    getValue( ) {
+        const value = this.form.getValue( )
+        if ( value ) {
+            this.setState( { value } )
+        }
+        return value
+    }
+    render( ) {
+        let { schema, value, fields } = this.state
         return (
             <div className="panel panel-primary">
                 <div className="panel-heading">Enter Information</div>
@@ -89,6 +108,12 @@ class FileForm extends Component {
             this.setState( { messages: "Please select an image" } )
         }
         return file
+    }
+    reset = ( ) => {
+        this.setState( {
+            file: null,
+            messages: ""
+        } )
     }
     getFiles( file ) {
         let imageRegx = new RegExp( '^image\/*', 'i' )
@@ -146,7 +171,7 @@ class GeoCollect extends Component {
     }
     WFS = new WFSClient( this.props.geoserverUrl )
     onSubmit = ( e ) => {
-        e.preventDefault( )
+        // e.preventDefault( )
         if ( this.form.getValue( ) && this.xyForm.getValue( ) && this.fileForm
             .getValue( ) ) {
             this.showModal( )
@@ -164,7 +189,6 @@ class GeoCollect extends Component {
         } )
         this.WFS.insertFeature( layer, properties, geometry ).then( res =>
             res.text( ) ).then( ( xml ) => {
-            // console.log( xml )
             const parser = new DOMParser( )
             const xmlDoc = parser.parseFromString( xml, "text/xml" )
             const featureElements = xmlDoc.getElementsByTagNameNS(
@@ -173,11 +197,15 @@ class GeoCollect extends Component {
                 const fid = featureElements[ 0 ].getAttribute(
                     "fid" )
                 const fileFormValue = this.fileForm.getValue( )
-                const data = { file: fileFormValue.base64,
-                    file_name: fileFormValue.name, username: this
-                        .props.username, is_image: true,
-                    feature_id: fid, tags: [ 'geo_collect_' +
-                        this.layerName( ) ] }
+                const data = {
+                    file: fileFormValue.base64,
+                    file_name: fileFormValue.name,
+                    username: this.props.username,
+                    is_image: true,
+                    feature_id: fid,
+                    tags: [ 'geo_collect_' +
+                        this.layerName( ) ]
+                }
                 //TODO: remove static url
                 fetch(
                         `/apps/cartoview_attachment_manager/${this.layerName()}/file`, {
@@ -199,6 +227,8 @@ class GeoCollect extends Component {
                                     icon: <i style={{ color: "#e2372a" }} className="fa fa-times-circle-o fa-lg" aria-hidden="true"></i>
                                 } )
                         } else {
+                            this.form.buildForm( )
+                            this.fileForm.reset( )
                             this.setState( { saving: false } )
                             this.msg.show(
                                 'Your Data Saved successfully', {
@@ -278,7 +308,6 @@ class GeoCollect extends Component {
         this.saveAll( )
     }
     toggleComponent = ( component ) => {
-        console.log( component )
         this.setState( { currentComponent: component } )
     }
     alertOptions = {
