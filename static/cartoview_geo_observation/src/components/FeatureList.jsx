@@ -21,7 +21,7 @@ import Spinner from "react-spinkit"
 import TopNav from './topNav'
 import UltimatePaginationBootstrap3 from './BootstrapPaginate'
 import WMSService from '@boundlessgeo/sdk/services/WMSService'
-import { connect } from 'react-redux';
+import { connect } from 'react-redux'
 import ol from 'openlayers'
 import { viewStore } from '../store/stores'
 

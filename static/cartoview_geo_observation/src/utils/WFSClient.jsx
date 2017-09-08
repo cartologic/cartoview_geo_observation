@@ -43,6 +43,7 @@ class WFSClient {
             </${name}>
           </Insert>
         </Transaction>`;
+    console.log(xml)
     return this.sendXMLRequest(xml);
   }
   updateFeature(typeName, fid, properties, geometry){
