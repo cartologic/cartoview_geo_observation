@@ -193,10 +193,10 @@ class GeoCollect extends Component {
                 <div className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     <AlertContainer ref={a => this.msg = a} {...this.alertOptions} />
                     <div>
-                        <div className="row collector-title">
+                    <div className="row collector-title">
                             <div style={{ textAlign: '-webkit-center' }} className="col-xs-4 col-sm-2 col-md-2 vcenter">
                                 <Img src={[
-                                        config.config.logo.base64,
+                                        config.config.logo ? config.config.logo : "",
                                         config.map.thumbnail_url,
                                         urls.appLogo
                                     ]}
