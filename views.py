@@ -6,7 +6,7 @@ import tempfile
 from base64 import b64decode, b64encode
 
 from cartoview.app_manager.models import App, AppInstance
-from cartoview.app_manager.views import AppsThumbnail, StandardAppViews
+from cartoview.app_manager.views import StandardAppViews
 from django.shortcuts import HttpResponse
 from PIL import Image
 
@@ -34,17 +34,20 @@ class Geoobservation(StandardAppViews):
     def save(self, request, instance_id=None):
         res_json = dict(success=False)
         data = json.loads(request.body)
+        config = data.get('config', None)
+        base64_image = config.get(
+            'logo', None)
+        if base64_image:
+            logo = base64_image.get('base64', None)
+            encoded_image = generate_thumbnails(logo)
+            config['logo']['base64'] = encoded_image
         map_id = data.get('map', None)
         title = data.get('title', "")
-        config = data.get('config', None)
-        base64_image = config.get('logo', None).get('base64', None)
-        encoded_image = generate_thumbnails(base64_image)
-        config['logo']['base64'] = encoded_image
         access = data.get('access', None)
-        config.update(access=access)
+        keywords = data.get('keywords', [])
+        config.update(access=access, keywords=keywords)
         config = json.dumps(data.get('config', None))
         abstract = data.get('abstract', "")
-        keywords = data.get('keywords', [])
 
         if instance_id is None:
             instance_obj = AppInstance()
@@ -58,8 +61,6 @@ class Geoobservation(StandardAppViews):
         instance_obj.abstract = abstract
         instance_obj.map_id = map_id
         instance_obj.save()
-        thumbnail_obj = AppsThumbnail(instance_obj)
-        thumbnail_obj.create_thumbnail()
 
         owner_permissions = [
             'view_resourcebase',
@@ -73,21 +74,22 @@ class Geoobservation(StandardAppViews):
         # access limited to specific users
         users_permissions = {'{}'.format(request.user): owner_permissions}
         for user in access:
-            if user != request.user.username:
-                users_permissions.update({user: ['view_resourcebase', ]})
+            if isinstance(user, dict) and \
+                    user.get('value', None) != request.user.username:
+                users_permissions.update(
+                    {user.get('value', None): ['view_resourcebase', ]})
         permessions = {
             'users': users_permissions
         }
-
         # set permissions so that no one can view this appinstance other than
         #  the user
         instance_obj.set_permissions(permessions)
 
         # update the instance keywords
-        if hasattr(instance_obj, 'keywords'):
+        if hasattr(instance_obj, 'keywords') and keywords:
             for k in keywords:
-                if k not in instance_obj.keyword_list():
-                    instance_obj.keywords.add(k)
+                if k.get('value', None) not in instance_obj.keyword_list():
+                    instance_obj.keywords.add(k.get('value', None))
 
         res_json.update(dict(success=True, id=instance_obj.id))
         return HttpResponse(json.dumps(res_json),
@@ -95,7 +97,7 @@ class Geoobservation(StandardAppViews):
 
     def __init__(self, app_name):
         super(Geoobservation, self).__init__(app_name)
-        self.view_template = "%s/geoform.html" % app_name
+        self.view_template = "%s/geoObservation.html" % app_name
 
 
 geo_observation = Geoobservation(APP_NAME)

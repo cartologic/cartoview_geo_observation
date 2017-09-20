@@ -57,7 +57,7 @@ export default class Edit extends Component {
                     }
                 }
             }, {
-                label: "Select Layer && Customize list",
+                label: "Select Layer",
                 component: ListOptions,
                 props: {
                     map: this.state.selectedResource,
@@ -65,12 +65,12 @@ export default class Edit extends Component {
                         this.setState( { attributes: attributes } )
                     },
                     config: this.props.config.instance ? this.props.config
-                        .instance.config : null,
+                        .instance.config : this.state.config.config,
                     urls: this.props.config.urls,
                     onComplete: ( listConfig ) => {
                         let { step } = this.state
                         let currentConfig = this.state.config
-                        Object.assign(
+                        let newConfig = Object.assign(
                             currentConfig, listConfig )
                         this.setState( {
                             config: currentConfig
@@ -80,14 +80,17 @@ export default class Edit extends Component {
                         this.onPrevious( )
                     }
                 }
-            }, {
+             }, {
                 label: "Form Customization",
                 component: FormFields,
                 props: {
                     map: this.state.selectedResource,
                     attributes: this.state.attributes,
                     config: this.props.config.instance ? this.props.config
-                        .instance.config : null,
+                        .instance.config : typeof ( this.state.config.config ) !==
+                        "undefined" && typeof ( this.state.config.config
+                            .attributes ) !== "undefined" ? this.state
+                        .config.config : null,
                     currentConfig: this.state.config,
                     urls: this.props.config.urls,
                     onComplete: ( config ) => {
@@ -152,7 +155,8 @@ export default class Edit extends Component {
                     config: this.props.config.instance ? this.props.config
                         .instance.config : null,
                     id: this.props.config.instance ? this.props.config
-                        .instance.id : this.state.id ? this.state.id : undefined,
+                        .instance.id : this.state.id ? this.state.id :
+                        undefined,
                     urls: this.props.config.urls,
                     success: this.state.success,
                     onComplete: ( basicConfig ) => {

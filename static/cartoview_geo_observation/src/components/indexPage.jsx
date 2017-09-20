@@ -4,7 +4,7 @@ import FeatureList from './FeatureList.jsx'
 import GeoCollect from '../GeoCollect'
 import Img from 'react-image'
 import PropTypes from 'prop-types'
-import { Provider } from 'react-redux';
+import { Provider } from 'react-redux'
 import ReactDOM from 'react-dom'
 import Spinner from "react-spinkit"
 import noImage from '../img/no-img.png'

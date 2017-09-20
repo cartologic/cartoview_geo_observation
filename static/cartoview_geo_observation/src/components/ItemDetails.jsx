@@ -44,6 +44,7 @@ class ItemDetails extends React.Component {
                                         noImage
                                     ]}
                                     loader={<Spinner className="loading-center" name="line-scale-party" color="steelblue" />}
+                                    style={{marginLeft: 'auto',marginRight: 'auto'}}
                                     className="img-responsive" />
                                 </div>
                             }

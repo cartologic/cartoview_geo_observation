@@ -1,8 +1,8 @@
-// import 'react-select/dist/react-select.css'
 import React, { Component } from 'react'
 
 import PropTypes from 'prop-types'
 import Select from 'react-select'
+
 export default class ListOptions extends Component {
     constructor( props ) {
         super( props )

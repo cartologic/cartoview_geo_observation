@@ -23,23 +23,44 @@
 
 {% endblock %}
 {% block extra_script %}
-    <script src="{{ STATIC_URL }}cartoview_geo_observation/dist/config.bundle.js"></script>
-    <script>
+<script src="{{ STATIC_URL }}cartoview_geo_Observation/dist/config.bundle.js?v={{v}}"></script>
+<script>
 
-  {% if instance %}
-  var appConfig = {{ instance.config|escape|safe }};
-  var abstract = " {% spaceless %}{{ instance.abstract|title }}{% endspaceless %} ";
-  var title = "{{ instance.title }}";
-  var map_id={{instance.map_id}};
-  var instance_id={{instance.id}};
-  var geoserver_url = "{{ GEOSERVER_BASE_URL }}";
-  var keywords = {{instance.keyword_list|jsonify}}
-  var abstract = " {% spaceless %}{{ instance.abstract|title }}{% endspaceless %} ";
-  {% endif %}
+    {% if instance %}
+    // the following section to fix config with old versions
+    //TODO:Plan to Remove this section
+    var appConfig = {{ instance.config|escape|safe }}
+    if(appConfig.access && Array.isArray(appConfig.access) && appConfig.access.length>0){
+    if(typeof(appConfig.access[0])==="string"){
+        var newAccess=[]
+        appConfig.access.forEach(function(access) {
+          newAccess.push({label:access,value:access,email:""})
+        })
+        appConfig.access=newAccess
+    }
+    }
+    var keywords = {{instance.keyword_list|jsonify}}
+    if(keywords && Array.isArray(keywords) && keywords.length>0){
+    if(typeof(keywords[0])==="string"){
+        var newKeywords=[]
+        keywords.forEach(function(keyword) {
+          newKeywords.push({label:keyword,value:keyword})
+        })
+        appConfig.keywords=newKeywords
+    }
+    }
+    var abstract = " {% spaceless %}{{ instance.abstract|title }}{% endspaceless %} ";
+    var title = "{{ instance.title }}";
+    var map_id={{instance.map_id}};
+    var instance_id={{instance.id}};
+    var geoserver_url = "{{ GEOSERVER_BASE_URL }}"
+
+    var abstract = " {% spaceless %}{{ instance.abstract|title }}{% endspaceless %} ";
+    {% endif %}
     var username="{{instance.owner.username}}"
     var viewer=new Viewer('root',{'instance':{map:{id:map_id,title:title,abstract:abstract},id:instance_id,config:appConfig},'urls':{'resources_url':"/api/maps","view":"/apps/cartoview_geoform/"+instance_id+"/view/","mapLayers":"/apps/maplayers/api","layerAttributes":"/apps/rest/app_manager/geonodelayerattribute/"},'limit':9},username);
     viewer.view();
-    </script>
+</script>
 <div id="myModal" class="modal fade" role="dialog">
 <div class="modal-dialog">
 
