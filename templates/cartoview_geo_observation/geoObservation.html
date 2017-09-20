@@ -3,7 +3,7 @@
 {% load bootstrap_tags staticfiles %}
 {% load i18n %}
 {% load static %}
-{% block title %} {{ block.super }} - {% trans "Geoform" %}- {{instance.title}} {% endblock %}
+{% block title %} {{ block.super }} - {% trans "Geo Observation" %}- {{instance.title}} {% endblock %}
 {% block head %}
     {% include "geonode/ext_header.html" %}
     {% include "geonode/app_header.html" %}
@@ -32,30 +32,28 @@
 {% block extra_script %}
 
     <script src="{{ STATIC_URL }}cartoview_geo_observation/dist/geoObservation.bundle.js?v={{v}}"></script>
-    <script type="text/javascript">
-      var URLS = {
-        geoserver: "{{ GEOSERVER_BASE_URL }}",
-        //{% if PROXY_URL %}
-        proxy: "{{ PROXY_URL }}",
-        //{% endif %}
-        static: "{{ STATIC_URL }}",
-        media: "{{ MEDIA_URL }}",
-        rest: "{% url 'app_manager_base_url' %}rest/app_manager/",
-        geonodeRest: "{% url 'api_api_top_level' 'api' %}"
-      };
-      function getMapConfigUrl(id){
-        return "/maps/" + id + "/data"
-      }
-
-      const props = {{ instance.config | safe }};
-      
-      props.formTitle="{{instance.title}}"
-      props.formAbstract="{{instance.abstract}}"
-      props.mapId =  {{ instance.map.id }};
-      props.geoserverUrl = URLS.geoserver
-      props.uploadUrl = ""
-      props.username="{{request.user.username}}"
-      GeoObservation.show('main-ct', props);
-    </script>
+    <script>
+    {% if instance %}
+        var instanceId= {{ instance.id }}
+        const urls={
+            mapJsonUrl: "{% url 'map_json' mapid=instance.map.id %}",
+            proxy: "{{ PROXY_URL }}",
+            appInstance: "{% url 'api_dispatch_detail' api_name='api' resource_name='appinstances' pk=instance.id %}",
+            geoserverUrl : "{{ GEOSERVER_BASE_URL }}",
+            save:'{% url 'cartoview_geo_collect.edit' instance_id=instance.id %}',
+            static: "{{ STATIC_URL }}",
+            media: "{{ MEDIA_URL }}",
+            rest: "{% url 'app_manager_base_url' %}rest/app_manager/",
+            geonodeRest: "{% url 'api_api_top_level' 'api' %}",
+            attachmentUploadUrl:function(layerName){
+                return '/apps/cartoview_attachment_manager/'+layerName+'/file'
+        },
+        appLogo:'{% static 'cartoview_geo_collect/logo.png' %}',
+        }
+    {% endif %}
+    var username="{{instance.owner.username}}"
+    var viewer=new GeoObservationViewer('main-ct',username,urls,instanceId);
+    viewer.view()
+</script>
 {% endblock %}
 

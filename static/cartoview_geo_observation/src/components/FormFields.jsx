@@ -20,7 +20,7 @@ export default class FormFields extends Component {
     constructor( props ) {
         super( props )
         this.state = {
-            attributes: this.props.config && this.props.currentConfig.layer === this.props.config.layer ? this.props.config.attributes : [ ],
+            attributes: this.props.config && this.props.currentConfig.config.layer === this.props.config.layer ? this.props.config.attributes : [ ],
             geometryName: undefined,
             allAttributes: this.props.attributes,
             showModal: false,
@@ -93,9 +93,9 @@ export default class FormFields extends Component {
             label: t.String,
             id: t.Number,
             placeholder: t.String,
-            helpText: t.String,
+            helpText: t.maybe(t.String),
             required: t.Boolean,
-            defaultValue: t.String,
+            defaultValue: t.maybe(t.String),
             fieldType: fieldList,
             options: t.list( Options )
         } )

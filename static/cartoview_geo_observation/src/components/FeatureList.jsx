@@ -9,7 +9,6 @@ import {
     selectedFeatures
 } from '../actions/features'
 
-import AlertContainer from 'react-alert'
 import FeatureListItem from "./FeatureListItem"
 import FeatureListMap from "./FeatureListMap"
 import ItemDetails from "./ItemDetails"
@@ -18,9 +17,7 @@ import MapConfigTransformService from '@boundlessgeo/sdk/services/MapConfigTrans
 import PropTypes from 'prop-types'
 import React from 'react'
 import Spinner from "react-spinkit"
-import TopNav from './topNav'
 import UltimatePaginationBootstrap3 from './BootstrapPaginate'
-import WMSService from '@boundlessgeo/sdk/services/WMSService'
 import { connect } from 'react-redux'
 import ol from 'openlayers'
 import { viewStore } from '../store/stores'
@@ -74,18 +71,16 @@ const isWMSLayer = ( layer ) => {
         .source.ImageWMS
 }
 const wmsGetFeatureInfoFormats = {
-	'application/json': new ol.format.GeoJSON(),
-	'application/vnd.ogc.gml': new ol.format.WMSGetFeatureInfo()
+    'application/json': new ol.format.GeoJSON( ),
+    'application/vnd.ogc.gml': new ol.format.WMSGetFeatureInfo( )
 };
-const getFeatureInfoUrl=(layer, coordinate, view, infoFormat)=> {
-    var resolution = view.getResolution(), projection = view.getProjection();
-    var url = layer.getSource().getGetFeatureInfoUrl(
-      coordinate,
-      resolution,
-      projection, {
-        'INFO_FORMAT': infoFormat
-      }
-    );
+const getFeatureInfoUrl = ( layer, coordinate, view, infoFormat ) => {
+    var resolution = view.getResolution( ),
+        projection = view.getProjection( );
+    var url = layer.getSource( ).getGetFeatureInfoUrl( coordinate,
+        resolution, projection, {
+            'INFO_FORMAT': infoFormat
+        } );
     return url
 }
 const getWMSLayer = ( name, layers ) => {
@@ -133,63 +128,92 @@ class FeatureList extends React.Component {
     init( map ) {
         map.on( 'singleclick', ( e ) => {
             document.body.style.cursor = "progress"
-            const view = map.getView();
-            const url = getFeatureInfoUrl(getWMSLayer(this.props
-                .layer, map.getLayers( ).getArray( )), e.coordinate,view, 'application/json')
-            fetch( url ).then(( response ) => response.json( )).then(( result ) => {
-                const features=wmsGetFeatureInfoFormats['application/json'].readFeatures(result)
-                const crs=result.crs.properties.name.split(":").pop()
-                if ( features.length == 1 ) {
-                    if(proj4.defs('EPSG:' + crs)){
-                        features[0].getGeometry( ).transform('EPSG:'+crs, this.map.getView( ).getProjection( ));
-                        this.zoomToFeature(features[0])
-                        this.props.setSelectedFeatures(
-                            features )
-                        this.props.setSelectMode( true )
-                    }else{
-                        fetch("http://epsg.io/?format=json&q=" + crs).then(response=>response.json()).then(projres=>{
-                            proj4.defs('EPSG:' + crs, projres.results[0].proj4)
-                            features[0].getGeometry( ).transform('EPSG:'+crs, this.map.getView( ).getProjection( ));
-                            this.zoomToFeature(features[0])
+            const view = map.getView( );
+            const url = getFeatureInfoUrl( getWMSLayer( this.props
+                    .layer, map.getLayers( ).getArray( ) ),
+                e.coordinate, view, 'application/json' )
+            fetch( url ).then( ( response ) => response.json( ) )
+                .then( ( result ) => {
+                    const features =
+                        wmsGetFeatureInfoFormats[
+                            'application/json' ].readFeatures(
+                            result )
+                    const crs = result.crs.properties.name
+                        .split( ":" ).pop( )
+                    if ( features.length == 1 ) {
+                        if ( proj4.defs( 'EPSG:' + crs ) ) {
+                            features[ 0 ].getGeometry( ).transform(
+                                'EPSG:' + crs, this.map
+                                .getView( ).getProjection( )
+                            );
+                            this.zoomToFeature( features[
+                                0 ] )
                             this.props.setSelectedFeatures(
                                 features )
                             this.props.setSelectMode( true )
-                        })
+                        } else {
+                            fetch(
+                                "http://epsg.io/?format=json&q=" +
+                                crs ).then( response =>
+                                response.json( ) ).then(
+                                projres => {
+                                    proj4.defs(
+                                        'EPSG:' +
+                                        crs,
+                                        projres.results[
+                                            0 ].proj4
+                                    )
+                                    features[ 0 ].getGeometry( )
+                                        .transform(
+                                            'EPSG:' +
+                                            crs, this.map
+                                            .getView( )
+                                            .getProjection( )
+                                        );
+                                    this.zoomToFeature(
+                                        features[
+                                            0 ] )
+                                    this.props.setSelectedFeatures(
+                                        features )
+                                    this.props.setSelectMode(
+                                        true )
+                                } )
+                        }
+                    } else if ( features.length > 1 ) {
+                        let transformedFeatures = [ ]
+                        features.forEach( ( feature ) => {
+                            feature.getGeometry( )
+                                .transform(
+                                    'EPSG:' + crs,
+                                    this.map.getView( )
+                                    .getProjection( )
+                                );
+                            transformedFeatures.push(
+                                feature )
+                        } );
+                        this.props.setSelectedFeatures(
+                            features )
+                        this.props.setSelectMode( true )
                     }
-                    
-                    
-                } else if ( features.length > 1 ) {
-                    let transformedFeatures = [ ]
-                    features.forEach(( feature ) => {
-                        feature.getGeometry( ).transform('EPSG:'+crs, this.map.getView( ).getProjection( ));
-                        transformedFeatures.push( feature )
-                    });
-                    this.props.setSelectedFeatures(
-                        features )
-                    this.props.setSelectMode( true )
-                }
-                document.body.style.cursor = "default";
-            })
+                    document.body.style.cursor = "default";
+                } )
         } )
     }
-    updateMap( config ) {
-        if ( config && config.mapId ) {
-            var url = getMapConfigUrl( this.props.mapId );
-            fetch( url, {
-                method: "GET",
-                credentials: 'include'
-            } ).then( ( response ) => {
-                if ( response.status == 200 ) {
-                    return response.json( );
-                }
-            } ).then( ( config ) => {
-                if ( config ) {
-                    MapConfigService.load(
-                        MapConfigTransformService.transform(
-                            config ), this.map )
-                }
-            } )
-        }
+    updateMap( url ) {
+        fetch( url, {
+            method: "GET",
+            credentials: 'include'
+        } ).then( ( response ) => {
+            if ( response.status == 200 ) {
+                return response.json( );
+            }
+        } ).then( ( config ) => {
+            if ( config ) {
+                MapConfigService.load(
+                    MapConfigTransformService.transform(
+                        config ), this.map )
+            }
+        } )
     }
     getLayers( layers ) {
         var children = [ ]
@@ -238,7 +262,7 @@ class FeatureList extends React.Component {
     componentWillMount( ) {
         this.loadfeatures( )
         this.props.loadAttachments( this.layerName( ) )
-        this.updateMap( this.state.config )
+        this.updateMap( this.props.mapUrl )
     }
     render( ) {
         let {
@@ -256,9 +280,6 @@ class FeatureList extends React.Component {
         } = this.props
         return (
             <div className="container-fluid">
-                <AlertContainer ref={a => this.msg = a} {...this.alertOptions} />
-
-                <TopNav currentComponent="List" toggleComponent={x => this.props.toggleComponent(x)} />
                 {!selectMode && <div style={{ margin: 10 }} className="col-xs-12 col-sm-12 col-md-12 col-lg-12">
                     <div className="input-group">
                         <input ref="search" type="text" className="form-control" placeholder="Search" required />
@@ -298,9 +319,9 @@ class FeatureList extends React.Component {
                 {!(featureIsLoading || attachmentFilesIsLoading) && selectMode && selectedFeatures.length == 1 &&
                     <ItemDetails />
                 }
-                <div style={{ height: 400, display: selectMode ? "block" : "none" }}>
+                {selectMode && <div style={{ display: selectMode ? "block" : "none" }}>
                     <FeatureListMap map={this.map} display={selectMode ? true : false} mapRef="fmap" {...this.props}></FeatureListMap>
-                </div>
+                </div>}
             </div>
         )
     }
