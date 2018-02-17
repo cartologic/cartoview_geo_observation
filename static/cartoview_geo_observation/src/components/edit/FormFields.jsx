@@ -258,6 +258,9 @@ export default class FormFields extends Component {
                             </div>
                         </div>
                     })}
+                    {!loading && !buildingForm && attributes.length == 0 && <div className="col-sm-12 text-center">
+                        <h3 className={"text-danger"}>{"Please Select Layer First"}</h3>
+                    </div>}
                     {showModal
                         ? <FieldConfigModal
                             options={formFieldOptions}
