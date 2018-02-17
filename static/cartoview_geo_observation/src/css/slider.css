@@ -1,0 +1,12 @@
+.slick-prev:before,
+.slick-next:before {
+  color: black;
+}
+#description-block{
+  text-align: left;
+}
+@media only screen and (max-width: 742px) {
+  #description-block{
+    text-align: center;
+  }
+}

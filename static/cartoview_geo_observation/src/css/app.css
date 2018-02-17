@@ -1,0 +1,153 @@
+.wrapping {
+    padding-top: 20px
+}
+
+.resource-box {
+    border: 1px solid darkgray;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    margin-left: 10px !important;
+    margin-right: 10px !important;
+}
+.flex-element{
+    display: flex !important;
+    flex: 1;
+    align-items: center;
+}
+.fill-empty {
+    flex: 1
+}
+
+.map-details-button {
+    margin: 5px;
+    float: right
+}
+
+.center-div {
+    margin-left: auto !important;
+    margin-right: auto !important;
+}
+
+.nav-tab {
+    cursor: pointer;
+}
+
+.cartoview-nav-list {
+    border: 1px solid #cac5c5;
+    border-radius: 5%;
+    padding: 10px;
+}
+
+.tab-content {
+    border: 1px #e2e2e2 solid;
+    border-radius: 5px;
+    padding: 10px;
+}
+
+.grid {
+    display: grid;
+}
+
+.right-panel {
+    padding-left: 40px
+}
+
+.resource-box-img {
+    border-right: 2px solid darkgray;
+    width: 240px;
+}
+
+.switch.on {
+    background: #2c689c !important;
+}
+
+.row-fix {
+    margin-left: 0px;
+    margin-right: 0px;
+}
+
+.ol-control button {
+    background-color: rgb(78, 188, 212) !important;
+}
+
+.content {
+    margin-top: 50px
+}
+
+.flex-display {
+    padding-top: 10px;
+    padding-bottom: 10px;
+    display: flex;
+}
+
+.switch-text {
+    font-weight: 500px;
+    margin-right: 10px
+}
+
+.resource-box-img-container {
+    padding: 0px;
+}
+
+.resource-box-text .list-group {
+    margin-top: 10px;
+}
+
+.about-text {
+    padding-top: 30px
+}
+
+.action-bar {
+    display: flex;
+    margin-top: 10px;
+    padding: 5px;
+}
+
+.action-bar p {
+    padding: 5px
+}
+
+.list-link {
+    color: #333333;
+}
+
+.list-group-item,
+.active>.list-link {
+    color: white;
+}
+
+.grow {
+    flex-grow: 1
+}
+
+@media screen and (max-width: 480px) {
+    .resource-box-img {
+        border-right: white;
+        margin-left: auto;
+        margin-right: auto;
+        width: 100%;
+    }
+    .resource-box {
+        border: 1px solid darkgray;
+        border-radius: 5px;
+        margin-bottom: 20px;
+        margin: 10px
+    }
+    .resource-box-img-container {
+        border-bottom: 2px solid lightgray;
+    }
+    .list-group {
+        padding: 0px;
+    }
+    .right-panel {
+        padding-left: 15px !important;
+    }
+    .resource-box-text {
+        text-align: center;
+    }
+    .map-details-button {
+        margin-left: auto !important;
+        margin-right: auto !important;
+        float: unset;
+    }
+}
