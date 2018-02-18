@@ -1,6 +1,6 @@
 {
-  "name": "CartoviewBasicViewer",
-  "version": "1.3.5",
+  "name": "CartoviewGeoObservations",
+  "version": "1.0.6",
   "description": "Map and configurable feature list side by side. Map and feature list are connected in zoom and pan. Use for store locations or similar apps.",
   "main": "index.js",
   "scripts": {
