@@ -19,7 +19,7 @@ def change_dict_None_to_list(access):
             access[permission] = []
 
 
-class BasicViewer(StandardAppViews):
+class GeoObservation(StandardAppViews):
     def get_users_permissions(self, access, initial, owner):
         change_dict_None_to_list(access)
         users = []
@@ -91,4 +91,4 @@ class BasicViewer(StandardAppViews):
                             content_type="application/json")
 
 
-basic_viewer = BasicViewer(APP_NAME)
+geo_observation = GeoObservation(APP_NAME)
