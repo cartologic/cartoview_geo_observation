@@ -79,6 +79,7 @@ export default class MapSelector extends React.Component {
     }
     render() {
         const { loading, selectedMap, selectMap, maps, userMaps, totalMaps, UserMapsChanged, limit, urls, searchEnabled } = this.props
+        const pageCount = totalMaps / limit
         return (
             <div className="grid">
                 <div className="row row-fix">
@@ -102,12 +103,12 @@ export default class MapSelector extends React.Component {
                     </div>
                 </div>}
                 {!loading && searchEnabled && maps.length == 0 && <h3 className="text-center">{"No Maps Found"}</h3>}
-                {!searchEnabled && <ReactPaginate
+                {!searchEnabled && pageCount > 1 && <ReactPaginate
                     previousLabel={"previous"}
                     nextLabel={"next"}
                     breakLabel={< a href="javascript:;" > ...</a>}
                     breakClassName={"break-me"}
-                    pageCount={totalMaps / limit}
+                    pageCount={pageCount}
                     marginPagesDisplayed={2}
                     pageRangeDisplayed={5}
                     onPageChange={this.handlePageClick}

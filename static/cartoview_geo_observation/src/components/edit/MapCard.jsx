@@ -20,15 +20,15 @@ export const MapCard = (props) => {
                     loader={< Spinner name="line-scale-pulse-out" color="steelblue" />} />
             </div>
 
-            <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8 resource-box-text">
-                <h4>{map.title}</h4>
+            <div className="col-xs-12 col-sm-8 col-md-8 col-lg-8 resource-box-text title-wrap">
+                <h4 className="title-wrap">{map.title}</h4>
                 <hr></hr>
-                <p>
+                <p className="title-wrap">
                     {map.abstract.length > 30
                         ? map.abstract.substr(0, 30) + '...'
                         : map.abstract}
                 </p>
-                <p>owner: {map.owner__username}</p>
+                <p className="title-wrap">owner: {map.owner__username}</p>
                 <a type="button"
                     href={`/maps/${map.id}`}
                     target="_blank"

@@ -1,21 +1,4 @@
 import t from 'tcomb-form'
-export const listConfigFormSchema = () => {
-    const selectTagItem = t.struct({
-        value: t.String,
-        label: t.String
-    })
-    const formSchema = t.struct({
-        layer: t.String,
-        titleAttribute: t.String,
-        subtitleAttribute: t.maybe(t.String),
-        filters: t.maybe(t.String),
-        pagination: t.String,
-        zoomOnSelect: t.Boolean,
-        enableImageListView: t.Boolean,
-
-    })
-    return formSchema
-}
 export const detailsConfigFormSchema = () => {
     const selectTagItem = t.struct({
         value: t.String,
@@ -65,6 +48,33 @@ export const toolFormSchema = () => {
         showLayerSwitcher: t.Boolean,
         showBaseMapSwitcher: t.Boolean,
         showLegend: t.Boolean
+    })
+    return formSchema
+}
+export const featureDetailsFormSchema = () => {
+    const selectTagItem = t.struct({
+        value: t.String,
+        label: t.String
+    })
+    const formSchema = t.struct({
+        attachmentTags: t.maybe(t.list(selectTagItem)),
+        attributesToDisplay: t.maybe(t.list(selectTagItem)),
+        showNumberOfComments: t.Boolean,
+        showNumberOfViews: t.Boolean,
+        showFeatureOwner: t.Boolean,
+        showStarRating: t.Boolean,
+    })
+    return formSchema
+}
+export const listConfigFormSchema = () => {
+    const formSchema = t.struct({
+        titleAttribute: t.String,
+        subtitleAttribute: t.maybe(t.String),
+        filters: t.maybe(t.String),
+        pagination: t.String,
+        zoomOnSelect: t.Boolean,
+        enableImageListView: t.Boolean,
+
     })
     return formSchema
 }

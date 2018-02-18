@@ -56,7 +56,7 @@ export default class ToolConfiguration extends React.Component {
     render() {
         return (
             <div>
-                <h3>{"Navigation Tools"}</h3>
+                <h3>{"Map Tools"}</h3>
                 <Form
                     ref={(formRef) => this.form = formRef}
                     value={this.state.value}

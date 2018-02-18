@@ -1,11 +1,14 @@
+import { getPropertyFromConfig, getSelectOptions } from 'Source/containers/staticMethods'
+
 import PropTypes from 'prop-types'
 import React from 'react'
-import { generalFormSchema } from '../../containers/forms'
+import { doGet } from 'Source/containers/utils'
+import { generalFormSchema } from 'Source/containers/forms'
 import {
     getKeywordsTemplate
 } from './AutoCompleteInput'
-import { getPropertyFromConfig } from '../../containers/staticMethods'
 import t from 'tcomb-form'
+
 const Form = t.form.Form
 export default class AppConfiguration extends React.Component {
     constructor(props) {
@@ -22,36 +25,39 @@ export default class AppConfiguration extends React.Component {
         return true
     }
     getKeywordsOptions = (input, callback) => {
-        const { allKeywords } = this.props
-        let keywordsOptions = []
-        allKeywords.forEach(keyword => {
-            keywordsOptions.push({
-                label: keyword.name,
-                value: keyword.name,
-            })
+        const { allKeywords, getKeywords } = this.props
+        const keywordsPromise = new Promise((resolve, reject) => {
+            if (!input) {
+                resolve(getSelectOptions(allKeywords, 'name'))
+            } else {
+                getKeywords(input).then(result => {
+                    resolve(getSelectOptions(result.objects, 'name'))
+                })
+            }
         })
-        callback(null, {
-            options: keywordsOptions,
+        keywordsPromise.then(keywords => callback(null, {
+            options: keywords,
             complete: true
-        })
+        }))
+
     }
     getComponentValue = () => {
         const value = this.form.getValue()
         return value
     }
     componentWillReceiveProps(nextProps) {
-        const { selectedMap, config,instanceId } = this.props
-        if (((selectedMap !== nextProps.selectedMap) || config)&& !instanceId) {
+        const { selectedMap, config, instanceId } = this.props
+        if (((selectedMap !== nextProps.selectedMap) || config) && !instanceId) {
             this.setState({ value: this.getFormValue(nextProps) })
         }
     }
     onChange = (newValue) => {
         this.setState({ value: newValue })
     }
-    keywordsToOptions=(keywords)=>{
-        let options=[]
-        keywords.map(keyword=>{
-            options.push({value:keyword,label:keyword})
+    keywordsToOptions = (keywords) => {
+        let options = []
+        keywords.map(keyword => {
+            options.push({ value: keyword, label: keyword })
         })
         return options
     }
@@ -62,7 +68,7 @@ export default class AppConfiguration extends React.Component {
             title: title ? title : selectedMap ? selectedMap.title : null,
             abstract: abstract ? abstract : selectedMap ?
                 selectedMap.abstract : null,
-            keywords: this.keywordsToOptions(getPropertyFromConfig(config, 'keywords',[]))
+            keywords: this.keywordsToOptions(getPropertyFromConfig(config, 'keywords', []))
         }
         return value
     }
@@ -104,5 +110,5 @@ AppConfiguration.propTypes = {
     title: PropTypes.string,
     abstract: PropTypes.string,
     errors: PropTypes.array.isRequired,
-    instanceId:PropTypes.number
+    instanceId: PropTypes.number
 }

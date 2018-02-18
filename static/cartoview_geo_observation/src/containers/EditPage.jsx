@@ -5,15 +5,17 @@ import { doGet, doPost } from 'Source/containers/utils'
 
 import AppAccess from 'Source/components/edit/Access'
 import AppConfiguration from 'Source/components/edit/AppConfiguration'
-import LayerSelector from 'Source/components/edit/LayerSelector'
 import EditPageComponent from 'Source/components/edit/EditPage'
+import FeatureDetailsPanel from 'Source/components/edit/FeatureDetailsPanel'
+import FeatureListConfig from 'Source/components/edit/FeatureListConfig'
 import FormFields from 'Source/components/edit/FormFields'
+import LayerSelector from 'Source/components/edit/LayerSelector'
 import MapSelector from 'Source/components/edit/MapSelector'
-import { getPropertyFromConfig } from 'Source/containers/staticMethods'
 import PropTypes from 'prop-types'
 import React from 'react'
 import ToolConfiguration from 'Source/components/edit/ToolConfiguration'
 import URLS from 'Source/containers/URLS'
+import { getPropertyFromConfig } from 'Source/containers/staticMethods'
 
 const limit = 9
 class EditPage extends React.Component {
@@ -65,8 +67,13 @@ class EditPage extends React.Component {
         if (selectedLayer) {
             this.getFeatureTypes(selectedLayer)
         }
-        this.getKeywords()
-        this.getProfiles()
+        this.getKeywords().then(result => {
+            this.setState({ keywords: result.objects })
+        })
+        this.getProfiles().then(result => {
+            this.setState({ profiles: result.objects })
+        })
+        this.getTags()
     }
     UserMapsChanged = () => {
         const { userMaps } = this.state
@@ -141,21 +148,15 @@ class EditPage extends React.Component {
             })
         }
     }
-    getKeywords = () => {
-        this.setState({ loading: true })
+    getKeywords = (input = null) => {
         const { urls } = this.props
-        const url = urls.keywordsAPI
-        doGet(url).then(result => {
-            this.setState({ keywords: result.objects, loading: false })
-        })
+        const url = !input ? urls.keywordsAPI : this.urls.getParamterizedURL(urls.keywordsAPI, { slug__icontains: input })
+        return doGet(url)
     }
-    getProfiles = () => {
-        this.setState({ loading: true })
+    getProfiles = (input = null) => {
         const { urls } = this.props
-        const url = urls.profilesAPI
-        doGet(url).then(result => {
-            this.setState({ profiles: result.objects, loading: false })
-        })
+        const url = !input ? urls.profilesAPI : this.urls.getParamterizedURL(urls.profilesAPI, { username__icontains: input })
+        return doGet(url)
     }
     getTags = () => {
         const { urls } = this.props
@@ -200,6 +201,7 @@ class EditPage extends React.Component {
             instanceId,
             searchEnabled,
             layerAttributes,
+            tags,
             featureTypes,
             profiles
         } = this.state
@@ -250,6 +252,31 @@ class EditPage extends React.Component {
                 }
             },
             {
+                title: "Feature List",
+                component: FeatureListConfig,
+                ref: 'featureListStep',
+                hasErrors: false,
+                props: {
+                    config,
+                    layerAttributes,
+                    loading,
+                    config,
+                }
+            },
+            {
+                title: "Feature Details Panel ",
+                component: FeatureDetailsPanel,
+                ref: 'featureDetailStep',
+                hasErrors: false,
+                props: {
+                    config,
+                    layerAttributes,
+                    loading,
+                    config,
+                    tags,
+                }
+            },
+            {
                 title: "General",
                 component: AppConfiguration,
                 ref: 'generalStep',
@@ -259,12 +286,13 @@ class EditPage extends React.Component {
                     title,
                     selectedMap,
                     config,
+                    getKeywords: this.getKeywords,
                     allKeywords: keywords,
                     instanceId
                 }
             },
             {
-                title: "Acccess Configuration",
+                title: "Acccess",
                 component: AppAccess,
                 ref: 'accessConfigurationStep',
                 hasErrors: false,
@@ -272,16 +300,16 @@ class EditPage extends React.Component {
                     loading,
                     config,
                     profiles,
+                    getProfiles: this.getProfiles
                 }
             },
             {
-                title: "Navigation Tools",
+                title: "Map Tools",
                 component: ToolConfiguration,
                 ref: 'toolsStep',
                 hasErrors: false,
                 props: {
                     config,
-                    save: this.save,
                     instanceId
                 }
             }
@@ -301,6 +329,11 @@ class EditPage extends React.Component {
     }
     prepareServerData = () => {
         const keywords = this.generalStep.getComponentValue().keywords
+        let featureDetailValue = { ...this.featureDetailStep.getComponentValue() }
+        let attributes = featureDetailValue.attributesToDisplay
+        let tags = featureDetailValue.attachmentTags
+        featureDetailValue.attachmentTags = this.toArray(tags)
+        featureDetailValue.attributesToDisplay = this.toArray(attributes)
         const { selectedMap } = this.state
         let finalConfiguration = {
             map: selectedMap.id,
@@ -309,10 +342,14 @@ class EditPage extends React.Component {
                 ...this.toolsStep.getComponentValue(),
                 ...this.layerSelectStep.getComponentValue(),
                 ...this.buildFormStep.getComponentValue(),
+                ...this.featureListStep.getComponentValue(),
+                ...featureDetailValue,
             },
             access: this.accessConfigurationStep.getComponentValue(),
             keywords: this.toArray(keywords)
         }
+
+
         return finalConfiguration
 
     }

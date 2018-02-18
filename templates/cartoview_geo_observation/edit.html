@@ -29,6 +29,7 @@
                     appInstance: "{% url 'api_dispatch_detail' api_name='api' resource_name='appinstances' pk=instance.id %}",
                     proxy: "{{ PROXY_URL }}",
                     geoserverUrl : "{{ GEOSERVER_BASE_URL }}",
+                    tagsAPI:"{% url 'tags_list' %}",
                     static: "{{ STATIC_URL }}",
                     media: "{{ MEDIA_URL }}",
                     rest: "{% url 'app_manager_base_url' %}rest/app_manager/",

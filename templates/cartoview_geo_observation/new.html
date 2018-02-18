@@ -33,6 +33,7 @@
         media: "{{ MEDIA_URL }}",
         rest: "{% url 'app_manager_base_url' %}rest/app_manager/",
         geonodeRest: "{% url 'api_api_top_level' 'api' %}",
+        tagsAPI:"{% url 'tags_list' %}",
         appLogo:'{% static 'cartoview_geo_observation/logo.png' %}',
         layerAttributes:"{% url 'api_dispatch_list' api_name='' resource_name='geonodelayerattribute' %}",
         mapLayers:"{% url "cartoview_map_layers" %}",

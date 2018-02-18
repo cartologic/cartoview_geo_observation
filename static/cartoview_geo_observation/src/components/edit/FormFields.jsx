@@ -3,9 +3,9 @@ import React, { Component } from 'react'
 import FieldConfigModal from "Source/components/edit/FieldConfigModal"
 import { Loader } from 'Source/components/edit/CommonComponents'
 import PropTypes from "prop-types"
+import { getPropertyFromConfig } from 'Source/containers/staticMethods'
 import t from 'tcomb-form'
 import update from 'immutability-helper'
-import { getPropertyFromConfig } from 'Source/containers/staticMethods'
 
 const initialTypeMapping = {
     string: "text",
@@ -28,7 +28,6 @@ export default class FormFields extends Component {
             geometryName: null,
             showModal: false,
             attribute: null,
-            loading: false,
             buildingForm: false,
             fieldList: [],
             fieldConfig: null,
@@ -230,17 +229,16 @@ export default class FormFields extends Component {
             formFieldOptions,
             fieldConfig,
             defaultValue,
-            buildingForm,
-            loading
+            buildingForm
         } = this.state
-        const { featureTypes } = this.props
+        const { featureTypes, loading } = this.props
         const { onComplete, onPrevious } = this.props
         return (
             <div>
                 <h3>{"Form Builder"}</h3>
                 <hr></hr>
                 <div className="row">
-                    {loading || buildingForm && <Loader />}
+                    {(loading || buildingForm) && <Loader />}
                     {!loading && !buildingForm && attributes.length > 0 && featureTypes && featureTypes.length > 0 && attributes.map((attribute, index) => {
                         return <div key={index} className="col-lg-6">
                             <div className="input-group">
