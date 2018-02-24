@@ -8,8 +8,8 @@ import {
 import { Loader } from './MapSelector'
 import PropTypes from 'prop-types'
 import React from 'react'
-import { featureDetailsFormSchema } from '../../containers/forms'
-import { getPropertyFromConfig } from './FeatureListConfig'
+import { featureDetailsFormSchema } from 'Source/forms/forms'
+import { getPropertyFromConfig } from 'Source/utils/utils'
 import t from 'tcomb-form'
 
 const Form = t.form.Form

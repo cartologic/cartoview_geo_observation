@@ -1,7 +1,7 @@
 import 'Source/css/app.css'
 import 'react-select/dist/react-select.css'
 
-import { doGet, doPost } from 'Source/containers/utils'
+import { doGet, doPost } from 'Source/utils/utils'
 
 import AppAccess from 'Source/components/edit/Access'
 import AppConfiguration from 'Source/components/edit/AppConfiguration'
@@ -15,7 +15,7 @@ import PropTypes from 'prop-types'
 import React from 'react'
 import ToolConfiguration from 'Source/components/edit/ToolConfiguration'
 import URLS from 'Source/containers/URLS'
-import { getPropertyFromConfig } from 'Source/containers/staticMethods'
+import { getPropertyFromConfig } from 'Source/utils/utils'
 
 const limit = 9
 class EditPage extends React.Component {

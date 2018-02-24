@@ -2,7 +2,11 @@ import json
 
 from cartoview.app_manager.models import App, AppInstance
 from cartoview.app_manager.views import StandardAppViews
-from django.shortcuts import HttpResponse
+from django.shortcuts import HttpResponse, render, get_object_or_404
+from django.conf.urls import include, patterns, url
+from django.utils.decorators import method_decorator
+from cartoview.app_manager.decorators import can_view_app_instance
+from tastypie.api import Api
 
 from . import APP_NAME
 _js_permissions_mapping = {
@@ -89,6 +93,31 @@ class GeoObservation(StandardAppViews):
         res_json.update(dict(success=True, id=instance_obj.id))
         return HttpResponse(json.dumps(res_json),
                             content_type="application/json")
+
+    @method_decorator(can_view_app_instance)
+    def list_map(self, request, instance_id):
+        template_name = "%s/list_map.html" % (self.app_name)
+        instance = get_object_or_404(AppInstance, pk=instance_id)
+        context = {'instance': instance}
+        return render(request, template_name, context=context)
+
+    def get_url_patterns(self):
+        from .rest import CollectorHistoryResource
+        v1_api = Api(api_name='collector_api')
+        v1_api.register(CollectorHistoryResource())
+        return patterns('',
+                        url(r'^new/$', self.new,
+                            name='%s.new' % self.app_name),
+                        url(r'^(?P<instance_id>\d+)/edit/$',
+                            self.edit, name='%s.edit' % self.app_name),
+                        url(r'^(?P<instance_id>\d+)/view/$',
+                            self.list_map,
+                            name='%s.view' % self.app_name),
+                        url(r'^(?P<instance_id>\d+)/observe/$',
+                            self.view_app,
+                            name='%s.observe' % self.app_name),
+                        url(r'^api/', include(v1_api.urls))
+                        )
 
 
 geo_observation = GeoObservation(APP_NAME)

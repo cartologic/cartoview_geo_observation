@@ -1,9 +1,13 @@
 import GeoJSON from 'ol/format/geojson'
+import WFS from 'ol/format/wfs'
 import WMSGetFeatureInfo from 'ol/format/wmsgetfeatureinfo'
 import proj4 from 'proj4'
-const wmsGetFeatureInfoFormats = {
+export const wmsGetFeatureInfoFormats = {
     'application/json': new GeoJSON(),
     'application/vnd.ogc.gml': new WMSGetFeatureInfo()
+}
+export const  wfsFormats={
+    'wfs':new WFS()
 }
 class FeatureHelper {
     getFormat=(format)=>{

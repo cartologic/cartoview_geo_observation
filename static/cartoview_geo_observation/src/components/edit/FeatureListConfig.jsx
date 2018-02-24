@@ -3,7 +3,7 @@ import 'react-select/dist/react-select.css'
 import { Loader } from './MapSelector'
 import PropTypes from 'prop-types'
 import React from 'react'
-import { listConfigFormSchema } from '../../containers/forms'
+import { listConfigFormSchema } from 'Source/forms/forms'
 import t from 'tcomb-form'
 
 const Form = t.form.Form

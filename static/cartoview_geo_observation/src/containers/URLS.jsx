@@ -10,6 +10,11 @@ class URLS {
     getParamterizedURL = (url, query) => {
         return UrlAssembler(url).query(query).toString()
     }
+    wfsQueryBuilder = ( geoserverUrl, query ) => {
+        const url = decodeURIComponent( UrlAssembler( geoserverUrl ).query(
+            query ).toString() )
+        return this.getProxiedURL(url)
+    }
     getMapApiURL = (username, userMaps = false, limit, offset,query={}) => {
         let params = {
             'limit': limit,

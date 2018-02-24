@@ -1,8 +1,8 @@
 import PropTypes from 'prop-types'
 import React from 'react'
-import { getPropertyFromConfig } from '../../containers/staticMethods'
+import { getPropertyFromConfig } from 'Source/utils/utils'
 import t from 'tcomb-form'
-import { toolFormSchema } from '../../containers/forms'
+import { toolFormSchema } from 'Source/forms/forms'
 const options = {
     fields: {
         showZoombar: {

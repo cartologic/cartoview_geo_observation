@@ -1,9 +1,9 @@
-import { getPropertyFromConfig, getSelectOptions } from 'Source/containers/staticMethods'
+import { getPropertyFromConfig, getSelectOptions } from 'Source/utils/utils'
 
 import PropTypes from 'prop-types'
 import React from 'react'
-import { doGet } from 'Source/containers/utils'
-import { generalFormSchema } from 'Source/containers/forms'
+import { doGet } from 'Source/utils/utils'
+import { generalFormSchema } from 'Source/forms/forms'
 import {
     getKeywordsTemplate
 } from './AutoCompleteInput'

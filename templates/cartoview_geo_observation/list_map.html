@@ -1,0 +1,83 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ instance.title }}</title>
+    <link rel="shortcut icon" type="image/png" href="{{ STATIC_URL }}cartoview/img/icon.png" />
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <meta name="viewport" content="width=device-width,initial-scale=1.0, maximum-scale=1, user-scalable=no" /> 
+    <link rel="stylesheet" href="{% static 'cartoview_geo_observation/src/css/view.css' %}">   
+    <style>
+        html,body {
+            height: 100%;
+            margin: 0px;
+            overflow: hidden;
+            padding: 0px !important
+        }
+        #root{
+            height: 100%
+        }
+        body{
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+    <script src="{{ STATIC_URL }}cartoview_geo_observation/dist/commons.js?v={{v}}"></script>
+    <script src="{{ STATIC_URL }}cartoview_geo_observation/dist/Main.bundle.js?v={{v}}"></script>
+    <script>
+        {% if instance %}
+            var instanceId= {{ instance.id }}
+            {% if PROXY_URL %}
+                    const PROXY_URL='{{PROXY_URL}}'
+            {% else %}
+                    const PROXY_URL=null
+            {% endif %}
+            const urls={
+                mapJsonUrl: "{% url 'map_json' mapid=instance.map.id %}",
+                proxy: PROXY_URL,
+                appInstance: "{% url 'api_dispatch_detail' api_name='api' resource_name='appinstances' pk=instance.id %}",
+                historyListCreate: "{% url 'api_dispatch_list' api_name='collector_api' resource_name='collector_history' %}",
+                geoserverUrl : "{{ GEOSERVER_BASE_URL }}",
+                {% if 'access_token' in request.session %}
+                describeFeatureType: function(typename){
+                        return "{{ GEOSERVER_BASE_URL }}wfs?service=wfs&version=2.0.0&request=DescribeFeatureType&typeName="+typename+"&access_token={{request.session.access_token}}"
+                },
+                wfsURL : "{{ GEOSERVER_BASE_URL }}wfs?access_token={{request.session.access_token}}",
+                wmsURL : "{{ GEOSERVER_BASE_URL }}wms?access_token={{request.session.access_token}}",
+                token:"{{request.session.access_token}}",
+                {% else %}
+                describeFeatureType: function(typename){
+                        return "{{ GEOSERVER_BASE_URL }}wfs?service=wfs&version=2.0.0&request=DescribeFeatureType&typeName="+typename
+                },
+                wfsURL : "{{ GEOSERVER_BASE_URL }}wfs",
+                wmsURL : "{{ GEOSERVER_BASE_URL }}wms",
+                {% endif %}
+                save:'{% url 'cartoview_geo_observation.edit' instance_id=instance.id %}',
+                editObservation:function(fid){
+                    return "{% url 'cartoview_geo_observation.observe' instance_id=instance.id %}/#/"+fid+"/edit"
+                },
+                static: "{{ STATIC_URL }}",
+                attachmentUploadUrl:function(layerName){
+                    return '{{SITEURL}}apps/cartoview_attachment_manager/'+layerName+'/file'
+                },
+                commentsUploadUrl:function(layerName){
+                    return '{{SITEURL}}apps/cartoview_attachment_manager/'+layerName+'/comment'
+                },
+                media: "{{ MEDIA_URL }}",
+                rest: "{% url 'app_manager_base_url' %}rest/app_manager/",
+                newObservation: "{% url 'cartoview_geo_observation.observe' instance_id=instance.id %}",
+                instancesPage: "{% url 'appinstance_browse' %}?app__name={{ instance.app.name }}&app__title={{instance.app.title }}",
+                geonodeRest: "{% url 'api_api_top_level' 'api' %}",
+                viewURL: "{% url "cartoview_geo_observation.view" instance_id=instance.id %}",
+                appLogo:'{% static 'cartoview_geo_observation/logo.png' %}',
+            }
+        {% endif %}
+        var username="{{request.user.username}}"
+        const viewer=new Viewer('root',username,urls,instanceId);
+        viewer.viewMain()
+    </script>
+</body>
+</html>

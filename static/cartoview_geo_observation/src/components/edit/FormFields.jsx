@@ -3,7 +3,7 @@ import React, { Component } from 'react'
 import FieldConfigModal from "Source/components/edit/FieldConfigModal"
 import { Loader } from 'Source/components/edit/CommonComponents'
 import PropTypes from "prop-types"
-import { getPropertyFromConfig } from 'Source/containers/staticMethods'
+import { getPropertyFromConfig } from 'Source/utils/utils'
 import t from 'tcomb-form'
 import update from 'immutability-helper'
 

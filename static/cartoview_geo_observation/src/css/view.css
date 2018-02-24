@@ -1,10 +1,45 @@
 .element-flex {
+    display: flex !important;
+}
+
+.card-item {
+    height: 151px;
+    width: 32%;
+}
+
+.card-item-text {
     display: flex;
+    flex-direction: column
+}
+
+.title-text {
     flex: 1
+}
+
+.feature-card-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.text-wrap {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+}
+
+.card-item img {
+    height: auto;
+    display: flex;
+    width: 40%
 }
 
 .full-width {
     width: 100%
+}
+
+.full-height {
+    height: 100%;
 }
 
 .element-block {
@@ -28,7 +63,9 @@
 }
 
 .text-center {
-    text-align: center
+    text-align: center;
+    align-items: center;
+    justify-content: center;
 }
 
 .text-left {
@@ -37,6 +74,15 @@
 
 .text-right {
     text-align: right
+}
+
+.pagination {
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+    justify-content: space-between;
+    width: 70%;
+    align-items: center;
 }
 
 .big-avatar {
@@ -60,7 +106,7 @@
 }
 
 .fill-out-empty {
-    flex-grow: 1
+    flex: 1
 }
 
 .map-panel {
@@ -137,7 +183,6 @@
     padding-bottom: 0px !important;
 }
 
-
 /* .layer-switcher {
     position: absolute;
     top: .5em !important;
@@ -210,16 +255,20 @@
     bottom: 8em;
 }
 
-@media screen and (max-width: 1024px) {
-    .big-avatar {
-        width: 85px
+@media screen and (max-width: 1024px) and (max-height:1366px) {
+    .card-item {
+        width: 45%;
     }
-    .list-item {
-        max-height: 85px;
+    .feature-card-container {
+        justify-content: space-around;
     }
-    .list-item-text {
-        position: relative;
-        display: block;
-        width: calc(100% - 85px);
+}
+
+@media screen and (max-width: 736px) and (max-height: 812px) {
+    .card-item {
+        width: 100%;
+    }
+    .feature-card-container {
+        justify-content: space-around;
     }
 }

@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
-import { layerSelectFormSchema } from 'Source/containers/forms'
+
 import PropTypes from 'prop-types'
-import { getPropertyFromConfig } from 'Source/containers/staticMethods'
+import { getPropertyFromConfig } from 'Source/utils/utils'
+import { layerSelectFormSchema } from 'Source/forms/forms'
 import t from 'tcomb-form'
 
 const Form = t.form.Form
