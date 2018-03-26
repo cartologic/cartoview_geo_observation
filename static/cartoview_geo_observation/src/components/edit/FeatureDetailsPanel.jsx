@@ -80,11 +80,11 @@ export default class FeatureDetailsPanel extends React.Component {
     getMultiSelectAttributesOptions = (attributes) => {
         let options = []
         attributes.forEach((attribute) => {
-            if (attribute.attribute_type.indexOf("gml:") ==
+            if (attribute.type.indexOf("gml:") ==
                 -1) {
                 options.push({
-                    value: attribute.attribute,
-                    label: attribute.attribute
+                    value: attribute.name,
+                    label: attribute.name
                 })
             }
         })

@@ -35,8 +35,9 @@
         geonodeRest: "{% url 'api_api_top_level' 'api' %}",
         tagsAPI:"{% url 'tags_list' %}",
         appLogo:'{% static 'cartoview_geo_observation/logo.png' %}',
-        layerAttributes:"{% url 'api_dispatch_list' api_name='' resource_name='geonodelayerattribute' %}",
-        mapLayers:"{% url "cartoview_map_layers" %}",
+        wfsURL : "{{ GEOSERVER_BASE_URL }}wfs?access_token={{request.session.access_token}}",
+        layerAttributes:"{% url 'api_dispatch_list' api_name='api' resource_name='attributes' %}",
+        mapLayers:"{% url 'api_dispatch_list' api_name='api' resource_name='maplayers' %}",
         newURL:"{% url "cartoview_geo_observation.new" %}",
         editURL:function(id){
           return "/apps/cartoview_geo_observation/"+id+"/edit/"

@@ -60,11 +60,11 @@ export default class FeatureListConfig extends React.Component {
     getAttributesOptions = (attributes) => {
         let options = []
         attributes.forEach((attribute) => {
-            if (attribute.attribute_type.indexOf("gml:") ==
+            if (attribute.type.indexOf("gml:") ==
                 -1) {
                 options.push({
-                    value: attribute.attribute,
-                    text: attribute.attribute
+                    value: attribute.name,
+                    text: attribute.name
                 })
             }
         })

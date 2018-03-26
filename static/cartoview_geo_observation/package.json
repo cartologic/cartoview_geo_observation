@@ -12,6 +12,8 @@
   "license": "BSD-2-Clause",
   "dependencies": {
     "autosuggest-highlight": "^3.1.0",
+    "babel-plugin-react-css-modules": "^3.3.3",
+    "cartoview-sdk": "^1.1.18",
     "classnames": "^2.2.5",
     "extract-text-webpack-plugin": "^3.0.2",
     "file-saver": "^1.3.3",

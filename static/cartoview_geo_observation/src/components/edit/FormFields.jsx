@@ -45,22 +45,18 @@ export default class FormFields extends Component {
         let attributes = []
         this.setState({ buildingForm: true })
         layerAttributes.map((attribute) => {
-            if (attribute.attribute_type.indexOf("gml") == 0) {
-                this.setState({ geometryName: attribute.attribute })
+            if (attribute.type.indexOf("gml") == 0) {
+                this.setState({ geometryName: attribute.name })
                 return
             }
             let dataType = this.getDataType(attribute)
             attributes.push({
                 included: true,
-                name: attribute.attribute,
-                id: attribute.id,
-                label: attribute.attribute_label ||
-                    attribute.attribute,
-                placeholder: attribute.attribute_label ||
-                    attribute.attribute,
+                name: attribute.name,
+                label: attribute.name ,
+                placeholder: attribute.name,
                 helpText: "",
-                required: !this.checkNillable(attribute.attribute) ?
-                    true : false,
+                required: !attribute.nillable,
                 defaultValue: null,
                 options: [],
                 dataType: dataType,
@@ -81,7 +77,7 @@ export default class FormFields extends Component {
         this.setup(layerAttributes)
     }
     getDataType = (attribute) => {
-        return attribute.attribute_type.split(":").pop().toLowerCase()
+        return attribute.type.split(":").pop().toLowerCase()
     }
     searchById = (id) => {
         let result = this.state.attributes.find((attribute) => {
@@ -140,7 +136,6 @@ export default class FormFields extends Component {
             name: t.String,
             dataType: t.String,
             label: t.String,
-            id: t.Number,
             placeholder: t.String,
             helpText: t.maybe(t.String),
             required: t.Boolean,
@@ -152,7 +147,6 @@ export default class FormFields extends Component {
             name: attribute.name,
             dataType: attribute.dataType,
             label: attribute.label,
-            id: attribute.id,
             options: attribute.options,
             fieldType: attribute.fieldType,
             placeholder: attribute.placeholder,

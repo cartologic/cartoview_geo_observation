@@ -48,10 +48,15 @@ class EditPage extends React.Component {
     getLayerAttributes = (typename) => {
         const { config, urls } = this.props
         this.setState({ loading: true })
-        const url = this.urls.getParamterizedURL(urls.layerAttributes, { layer__typename: typename })
+        const url = this.urls.getParamterizedURL(urls.wfsURL, {
+            'service': 'wfs', 'version': '2.0.0',
+            'request': 'DescribeFeatureType',
+            'typeName': typename, 'outputFormat': 'application/json'
+        })
         doGet(url).then(
             (data) => {
-                this.setState({ layerAttributes: data.objects })
+                console.log(data.featureTypes[0].properties)
+                this.setState({ layerAttributes: data.featureTypes[0].properties })
                 this.setState({ loading: false })
             }).catch((error) => {
                 throw error
@@ -82,7 +87,7 @@ class EditPage extends React.Component {
     getMapLayers() {
         const { urls } = this.props
         const { selectedMap } = this.state
-        const url = this.urls.getParamterizedURL(urls.mapLayers, { id: selectedMap.id })
+        const url = this.urls.getParamterizedURL(urls.mapLayers, { map__id: selectedMap.id, "type": "point" })
         this.setState({ loading: true })
         doGet(url).then((data) => {
             let pointLayers = data.objects.filter((layer) => {
