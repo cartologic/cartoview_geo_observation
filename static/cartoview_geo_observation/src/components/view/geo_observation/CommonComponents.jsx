@@ -7,8 +7,8 @@ export const NavigationButtons = (props) => {
     return <div className="container">
         <a onClick={showHistoryModal} href="javascript:;"><i className="fa fa-question-circle fa-2x pull-right" aria-hidden="true"></i></a>
         <a onClick={() => window.location.href = config.config.HomeButtonFunction && config.config.HomeButtonFunction === "instancePage" ? urls.instancesPage : "/"} href="javascript:;"><i className="fa fa-home fa-2x pull-right" aria-hidden="true"></i></a>
-        <a onClick={() => window.location.href = urls.viewerURL} href="javascript:;"><i className="fa fa-globe fa-2x pull-right" aria-hidden="true"></i></a>
-        <a onClick={() => window.location.href = urls.viewURL} href="javascript:;"><i className="fa fa-list-alt fa-2x pull-right" aria-hidden="true"></i></a>
+        {config.config.components && !config.config.components.basicViewer && <a onClick={() => window.location.href = urls.viewerURL} href="javascript:;"><i className="fa fa-globe fa-2x pull-right" aria-hidden="true"></i></a>}
+        {config.config.components && !config.config.components.featureList && <a onClick={() => window.location.href = urls.viewURL} href="javascript:;"><i className="fa fa-list-alt fa-2x pull-right" aria-hidden="true"></i></a>}
     </div>
 }
 NavigationButtons.propTypes = {

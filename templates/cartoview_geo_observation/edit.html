@@ -18,8 +18,8 @@
 {% endblock %}
 {% block extra_script %}
 
-    <script src="{{ STATIC_URL }}cartoview_geo_observation/dist/commons.js"></script>
-    <script src="{{ STATIC_URL }}cartoview_geo_observation/dist/config.bundle.js"></script>
+    <script src="{{ STATIC_URL }}cartoview_geo_observation/dist/commons.js?version=1.5.6"></script>
+    <script src="{{ STATIC_URL }}cartoview_geo_observation/dist/config.bundle.js?version=1.5.6"></script>
     <script>
         {% if instance %}
         const urls={
@@ -36,7 +36,6 @@
                     geonodeRest: "{% url 'api_api_top_level' 'api' %}",
                     appLogo:'{% static 'cartoview_geo_observation/logo.png' %}',
                     wfsURL : "{{ GEOSERVER_BASE_URL }}wfs?access_token={{request.session.access_token}}",
-                    layerAttributes:"{% url 'api_dispatch_list' api_name='' resource_name='geonodelayerattribute' %}",
                     mapLayers:"{% url 'api_dispatch_list' api_name='api' resource_name='maplayers' %}",
                     newURL:"{% url "cartoview_geo_observation.new" %}",
                     editURL:function(id){

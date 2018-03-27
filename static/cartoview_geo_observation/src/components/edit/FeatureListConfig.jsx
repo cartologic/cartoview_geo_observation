@@ -22,7 +22,9 @@ export default class FeatureListConfig extends React.Component {
         this.state = {
             value: this.getFormValue(config)
         }
+        console.log("FeatureList",config)
     }
+    
     getFormValue = (config) => {
         const value = {
             layer: getPropertyFromConfig(config, 'layer', null),
@@ -37,7 +39,9 @@ export default class FeatureListConfig extends React.Component {
             zoomOnSelect: getPropertyFromConfig(config,
                 'zoomOnSelect', true),
             enableImageListView: getPropertyFromConfig(config,
-                'enableImageListView', true)
+                'enableImageListView', true),
+            hideComponent: getPropertyFromConfig(config ? config.components : null,
+                'featureList', false)
         }
         return value
     }

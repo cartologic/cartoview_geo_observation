@@ -60,6 +60,10 @@ class Viewer {
                 abstract: res.abstract,
                 map: res.map
             }
+
+            if(res.config.components.basicViewer && res.config.components.featureList ){
+                window.location.href=this.urls.newObservation
+            }
             render(
                 <Main config={this.config} username={this.username} urls={this.urls} instanceId={this.instanceId} />,
                 document.getElementById(this.domId))

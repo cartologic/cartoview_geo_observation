@@ -1,6 +1,6 @@
 import 'typeface-roboto'
 
-import { HashRouter, Route, Switch } from 'react-router-dom'
+import { HashRouter, Redirect, Route, Switch } from 'react-router-dom'
 import React, { Component } from 'react'
 
 import BasicViewerContainer from 'Source/containers/basic_viewer/BasicViewer'
@@ -47,25 +47,62 @@ class Main extends Component {
         const { drawerOpen } = this.state
         this.setState({ drawerOpen: !drawerOpen })
     }
+    getFeatureListComponent = () => {
+        const { drawerOpen } = this.state
+        const { config, urls, classes } = this.props
+        const el = (props) => (<main>
+            <Button onClick={this.hanldeDrawerOpen} variant="fab" color="primary" aria-label="add" className={classes.button}>
+                <MenuIcon />
+            </Button>
+            <Sidenav config={config} urls={urls} drawerOpen={drawerOpen} hanldeDrawerOpen={this.hanldeDrawerOpen} />
+            <Wraper {...props}><FeatureListContainer config={config.config} urls={urls} {...props} /></Wraper>
+        </main>)
+        return el
+    }
+    getBasicViewerComponent = () => {
+        const { config, urls, username } = this.props
+        const el = (props) => <BasicViewerContainer username={username} config={config} urls={urls} {...props} />
+        return el
+    }
+
     render() {
         const { config, username, urls, classes } = this.props
         const { drawerOpen } = this.state
+        const components = [{ 'Component': this.getFeatureListComponent(), url: "/list", hide: config.config.components.featureList }, { 'Component': this.getBasicViewerComponent(), url: "/viewer", hide: config.config.components.basicViewer }]
+        const getDefaultComponent = () => {
+            let defaultComponent = { url: '/list' }
+            for (let i = 0; i < components.length; i++) {
+                const c = components[i]
+                if (!c.hide) {
+                    defaultComponent = c
+                    break
+                }
+            }
+            return defaultComponent
+        }
         return (
             <HashRouter>
                 <MuiThemeProvider theme={theme}>
                     <div className="full-height">
                         <Switch>
-                            <Route
-                                exact
-                                path={"/"}
-                                render={(props) => (<main>
-                                    <Button onClick={this.hanldeDrawerOpen} variant="fab" color="primary" aria-label="add" className={classes.button}>
-                                        <MenuIcon />
-                                    </Button>
-                                    <Sidenav config={config} urls={urls} drawerOpen={drawerOpen} hanldeDrawerOpen={this.hanldeDrawerOpen} />
-                                    <Wraper {...props}><FeatureListContainer config={config.config} urls={urls} {...props} /></Wraper>
-                                </main>)}
-                            />
+                            <Route exact path="/" render={() => (
+
+                                <Redirect to={getDefaultComponent().url} />
+
+                            )} />
+                            {components.map((component, index) => {
+                                let routeProps = {
+                                    path: component.url
+                                }
+                                if (!component.hide) {
+                                    routeProps.exact = true
+                                    return <Route
+                                        key={index}
+                                        {...routeProps}
+                                        render={(props) => (<component.Component {...props} />)}
+                                    />
+                                }
+                            })}
                             <Route
                                 exact
                                 path={`/:fid/details`}
@@ -78,11 +115,6 @@ class Main extends Component {
                                 </main>}
                             />
                         </Switch>
-                        <Route
-                            path={"/viewer"}
-                            render={(props) => <BasicViewerContainer username={username} config={config} urls={urls} {...props} />
-                            }
-                        />
 
                     </div>
                 </MuiThemeProvider>

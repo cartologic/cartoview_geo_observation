@@ -23,8 +23,8 @@ const Form = t.form.Form
 export default class ToolConfiguration extends React.Component {
     constructor(props) {
         super(props)
-        this.state={
-            value:this.getFormValue(this.props)
+        this.state = {
+            value: this.getFormValue(this.props)
         }
     }
     getComponentValue = () => {
@@ -40,12 +40,14 @@ export default class ToolConfiguration extends React.Component {
             showBaseMapSwitcher: getPropertyFromConfig(config,
                 'showBaseMapSwitcher', true),
             showLegend: getPropertyFromConfig(config,
-                'showLegend', true)
+                'showLegend', true),
+            hideComponent: getPropertyFromConfig(config ? config.components : null,
+                'basicViewer', false)
         }
         return value
     }
     componentWillReceiveProps(nextProps) {
-        const { config,instanceId } = this.props
+        const { config, instanceId } = this.props
         if (config && !instanceId) {
             this.setState({ value: this.getFormValue(nextProps) })
         }
@@ -69,5 +71,5 @@ export default class ToolConfiguration extends React.Component {
 }
 ToolConfiguration.propTypes = {
     config: PropTypes.object,
-    instanceId:PropTypes.number
+    instanceId: PropTypes.number
 }

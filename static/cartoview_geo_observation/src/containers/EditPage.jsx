@@ -55,7 +55,6 @@ class EditPage extends React.Component {
         })
         doGet(url).then(
             (data) => {
-                console.log(data.featureTypes[0].properties)
                 this.setState({ layerAttributes: data.featureTypes[0].properties })
                 this.setState({ loading: false })
             }).catch((error) => {
@@ -349,6 +348,10 @@ class EditPage extends React.Component {
                 ...this.buildFormStep.getComponentValue(),
                 ...this.featureListStep.getComponentValue(),
                 ...featureDetailValue,
+                components:{
+                    featureList:this.featureListStep.getComponentValue().hideComponent,
+                    basicViewer:this.toolsStep.getComponentValue().hideComponent
+                }
             },
             access: this.accessConfigurationStep.getComponentValue(),
             keywords: this.toArray(keywords)

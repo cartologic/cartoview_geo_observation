@@ -47,7 +47,8 @@ export const toolFormSchema = () => {
         showZoombar: t.Boolean,
         showLayerSwitcher: t.Boolean,
         showBaseMapSwitcher: t.Boolean,
-        showLegend: t.Boolean
+        showLegend: t.Boolean,
+        hideComponent: t.Boolean,
     })
     return formSchema
 }
@@ -74,6 +75,7 @@ export const listConfigFormSchema = () => {
         pagination: t.String,
         zoomOnSelect: t.Boolean,
         enableImageListView: t.Boolean,
+        hideComponent: t.Boolean,
 
     })
     return formSchema
