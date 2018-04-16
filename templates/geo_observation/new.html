@@ -3,12 +3,7 @@
 {% load i18n %}
 
 {% block title %} {{ block.super }} - {% trans "GeoObservation" %} {% endblock %}
-{% block head %}
-    {% include "geonode/ext_header.html" %}
-    {% include "geonode/app_header.html" %}
-    {{ block.super }}
 
-{% endblock %}
 {% block body %}
     <div id="page-wrapper">
         <div class="container-fluid">
