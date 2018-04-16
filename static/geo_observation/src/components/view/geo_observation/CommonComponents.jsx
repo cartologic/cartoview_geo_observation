@@ -1,5 +1,5 @@
 import Img from 'react-image'
-import Logo from '../../../../../cartoview_geo_observation/logo.png'
+import Logo from '../../../../../geo_observation/logo.png'
 import PropTypes from 'prop-types'
 import React from 'react'
 export const NavigationButtons = (props) => {

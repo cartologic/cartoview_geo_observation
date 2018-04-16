@@ -29,7 +29,7 @@ const config = {
         library: '[name]',
         libraryTarget: 'umd',
         umdNamedDefine: true,
-        publicPath: "/static/cartoview_geo_observation/dist/"
+        publicPath: "/static/geo_observation/dist/"
     },
     node: {
         fs: "empty"

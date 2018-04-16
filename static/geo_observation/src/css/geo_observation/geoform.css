@@ -79,7 +79,7 @@ body {
     white-space: pre-line;
 }
 body{
-    background-image: url('/static/cartoview_geo_observation/src/img/crossword.png');
+    background-image: url('/static/geo_observation/src/img/crossword.png');
     background-repeat: repeat;
 }
 .collector-title{
