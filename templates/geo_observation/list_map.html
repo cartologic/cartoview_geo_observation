@@ -56,7 +56,7 @@
                 wmsURL : "{{ GEOSERVER_BASE_URL }}wms",
                 {% endif %}
                 save:'{% url 'geo_observation.edit' instance_id=instance.id %}',
-                layerAttributes:"{% url 'api_dispatch_list' api_name='' resource_name='geonodelayerattribute' %}",
+                layerAttributes:"{% url 'api_dispatch_list' api_name='api' resource_name='attributes' %}",
                 editObservation:function(fid){
                     return "{% url 'geo_observation.observe' instance_id=instance.id %}/#/"+fid+"/edit"
                 },
