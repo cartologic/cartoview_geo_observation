@@ -72,7 +72,7 @@ class IntegrationAutosuggest extends React.Component {
         const lat = parseFloat(suggestion.value.lat)
         const icon = suggestion.value.icon
         return (
-            <MenuItem onTouchTap={() => action([lon, lat])} selected={isHighlighted} component="div">
+            <MenuItem onClick={() => action([lon, lat])} selected={isHighlighted} component="div">
                 {icon && <Img src={[
                     icon
                 ]}

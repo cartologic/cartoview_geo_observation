@@ -45,7 +45,7 @@ class Collapsible extends React.Component {
                             className={classnames(classes.expand, {
                                 [classes.expandOpen]: this.state.expanded,
                             })}
-                            onTouchTap={this.handleDetailsExpand}
+                            onClick={this.handleDetailsExpand}
                             aria-expanded={this.state.expanded}
                             aria-label="Show more"
                         >

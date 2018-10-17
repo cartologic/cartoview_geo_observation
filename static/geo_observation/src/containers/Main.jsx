@@ -12,14 +12,12 @@ import { MuiThemeProvider } from 'material-ui/styles'
 import PropTypes from 'prop-types'
 import Sidenav from 'Source/components/view/feature_list/Sidenav'
 import Wraper from 'Source/components/view/feature_list/Wraper'
-import injectTapEventPlugin from "react-tap-event-plugin"
 import proj from 'ol/proj'
 import proj4 from 'proj4'
 import { theme } from 'Source/components/view/feature_list/theme.jsx'
 import { withStyles } from 'material-ui/styles'
 
 proj.setProj4(proj4)
-injectTapEventPlugin()
 const styles = theme => ({
     root: {
         padding: theme.spacing.unit * 2,

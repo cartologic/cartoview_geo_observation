@@ -32,13 +32,13 @@ const UploaderActions = (props) => {
     const { files, saveImage, handleRequestClose, ImageURLValid } = props
     return <div>
         {(files.length > 0 || ImageURLValid) ?
-            <Button onTouchTap={saveImage} color="secondary">
+            <Button onClick={saveImage} color="secondary">
                 {"Upload"}
             </Button> : <Button disabled color="secondary">
                 {"Upload"}
             </Button>}
 
-        <Button onTouchTap={handleRequestClose} color="primary">
+        <Button onClick={handleRequestClose} color="primary">
             {"Cancel"}
         </Button>
     </div>
@@ -165,7 +165,7 @@ class ImageDialog extends React.Component {
         return (
             <div className="text-center">
 
-                {username !== "" && <Button onTouchTap={this.handleClickOpen} className={classes.button} color="primary">
+                {username !== "" && <Button onClick={this.handleClickOpen} className={classes.button} color="primary">
                     {"Upload"}
                     <FileUpload className={classes.rightIcon} />
                 </Button>}

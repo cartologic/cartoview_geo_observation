@@ -14,7 +14,7 @@ const Page = ( { value, isActive, onClick } ) => (
     <IconButton
 		style={{ ...flatButtonStyle }}
 		color={isActive ? "primary" : "default"}
-		onTouchTap={onClick}>
+		onClick={onClick}>
 		{value}
 	</IconButton>
 )
@@ -23,25 +23,25 @@ const Ellipsis = ( { onClick } ) => (
 );
 const FirstPageLink = ( { isActive, onClick } ) => (
     <IconButton color="secondary"
-		onTouchTap={onClick}>
+		onClick={onClick}>
 		<FirstPage />
 	</IconButton>
 );
 const PreviousPageLink = ( { isActive, onClick } ) => (
     <IconButton color="secondary"
-		onTouchTap={onClick}>
+		onClick={onClick}>
 		< ChevronLeft />
 	</IconButton>
 );
 const NextPageLink = ( { isActive, onClick } ) => (
     <IconButton color="secondary"
-		onTouchTap={onClick}>
+		onClick={onClick}>
 		< ChevronRight />
 	</IconButton>
 );
 const LastPageLink = ( { isActive, onClick } ) => (
     <IconButton color="secondary"
-		onTouchTap={onClick}>< LastPage /></IconButton>
+		onClick={onClick}>< LastPage /></IconButton>
 );
 const itemTypeToComponent = {
 	[ ITEM_TYPES.PAGE ]: Page,

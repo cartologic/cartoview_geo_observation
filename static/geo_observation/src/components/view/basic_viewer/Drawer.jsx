@@ -66,19 +66,19 @@ class CartoviewDrawer extends React.Component {
                             </ListItemIcon>
                             <ListItemText primary="Map" />
                         </ListItem>}
-                        <ListItem onTouchTap={() => window.location.href = urls.appInstancesPage} button>
+                        <ListItem onClick={() => window.location.href = urls.appInstancesPage} button>
                             <ListItemIcon>
                                 <HomeIcon />
                             </ListItemIcon>
                             <ListItemText primary="Home" />
                         </ListItem>
-                        <ListItem onTouchTap={this.handleAboutChange} button>
+                        <ListItem onClick={this.handleAboutChange} button>
                             <ListItemIcon>
                                 <InfoIcons />
                             </ListItemIcon>
                             <ListItemText primary="About" />
                         </ListItem>
-                        <ListItem onTouchTap={exportMap} button>
+                        <ListItem onClick={exportMap} button>
                             <ListItemIcon>
                                 <CameraIcon />
                             </ListItemIcon>

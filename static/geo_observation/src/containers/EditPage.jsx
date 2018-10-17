@@ -48,12 +48,13 @@ class EditPage extends React.Component {
     getLayerAttributes = (typename) => {
         const { config, urls } = this.props
         this.setState({ loading: true })
+        const proxyURL = urls.proxy
         const url = this.urls.getParamterizedURL(urls.wfsURL, {
             'service': 'wfs', 'version': '2.0.0',
             'request': 'DescribeFeatureType',
             'typeName': typename, 'outputFormat': 'application/json'
         })
-        doGet(url).then(
+        doGet(this.urls.getProxiedURL(url)).then(
             (data) => {
                 this.setState({ layerAttributes: data.featureTypes[0].properties })
                 this.setState({ loading: false })
@@ -86,7 +87,7 @@ class EditPage extends React.Component {
     getMapLayers() {
         const { urls } = this.props
         const { selectedMap } = this.state
-        const url = this.urls.getParamterizedURL(urls.mapLayers, { map__id: selectedMap.id, "type": "point" })
+        const url = this.urls.getParamterizedURL(urls.mapLayers, { map: selectedMap.id, fixed:false, 'type': 'point'})
         this.setState({ loading: true })
         doGet(url).then((data) => {
             let pointLayers = data.objects.filter((layer) => {

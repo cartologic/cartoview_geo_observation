@@ -199,7 +199,7 @@ class GeoCollectContainer extends Component {
     getGeometryName = () => {
         const { config } = this.props
         let { map } = this.state
-        const url = this.buildDescribeFeatureTypeURL(config.config.layer)
+        const url = this.urls.getProxiedURL(this.buildDescribeFeatureTypeURL(config.config.layer))
         doGet(url).then(result => {
             result.featureTypes[0].properties.forEach(attribute => {
                 if (attribute.type.includes("gml:")) {

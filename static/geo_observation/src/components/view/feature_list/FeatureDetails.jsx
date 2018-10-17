@@ -201,7 +201,7 @@ class FeatureDetails extends React.Component {
         let layer = match.params.typename
         const requestUrl = FeatureListHelper.getFeaturesURL(urls.wfsURL,
             0, layer, fid, parseInt(config.pagination), map.getView().getProjection().getCode())
-        return doGet(requestUrl)
+        return doGet(this.urls.getProxiedURL(requestUrl))
     }
     getImages = () => {
         const { files } = this.state

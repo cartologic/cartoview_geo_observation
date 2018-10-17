@@ -88,7 +88,7 @@ export const CommentBox = (props) => {
                     margin="normal"
                     fullWidth
                 />}
-            <Button onTouchTap={addComment} variant="raised" color="primary" className={classes.button}>
+            <Button onClick={addComment} variant="raised" color="primary" className={classes.button}>
                 {`Send `} <SendIcon />
             </Button>
         </div>

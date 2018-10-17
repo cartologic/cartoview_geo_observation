@@ -22,7 +22,6 @@ export default class FeatureListConfig extends React.Component {
         this.state = {
             value: this.getFormValue(config)
         }
-        console.log("FeatureList",config)
     }
     
     getFormValue = (config) => {
