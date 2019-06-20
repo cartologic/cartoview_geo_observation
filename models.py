@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from django.db import models
-from geonode import settings
+from django.conf import settings
 from geonode.layers.models import Layer
 
 
