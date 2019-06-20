@@ -84,7 +84,7 @@ const AppBar = (props) => {
     return (
         <div className="row">
             <div className="col-xs-10 col-sm-10 col-md-10 col-lg-10">
-                <h1>{"BasicViewer"}</h1>
+                <h1>{"Geo Observation"}</h1>
             </div>
             <div className="col-xs-2 col-sm-2 col-md-2 col-lg-2 text-center">
                 <h1>
