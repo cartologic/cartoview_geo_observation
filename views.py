@@ -3,7 +3,7 @@ import json
 from cartoview.app_manager.models import App, AppInstance
 from cartoview.app_manager.views import StandardAppViews
 from django.shortcuts import HttpResponse, render, get_object_or_404
-from django.conf.urls import include, patterns, url
+from django.conf.urls import include, url
 from django.utils.decorators import method_decorator
 from cartoview.app_manager.decorators import can_view_app_instance
 from tastypie.api import Api
@@ -105,7 +105,7 @@ class GeoObservation(StandardAppViews):
         from .rest import CollectorHistoryResource
         v1_api = Api(api_name='collector_api')
         v1_api.register(CollectorHistoryResource())
-        return patterns('',
+        return [
                         url(r'^new/$', self.new,
                             name='%s.new' % self.app_name),
                         url(r'^(?P<instance_id>\d+)/edit/$',
@@ -117,7 +117,7 @@ class GeoObservation(StandardAppViews):
                             self.view_app,
                             name='%s.observe' % self.app_name),
                         url(r'^api/', include(v1_api.urls))
-                        )
+        ]
 
 
 geo_observation = GeoObservation(APP_NAME)
