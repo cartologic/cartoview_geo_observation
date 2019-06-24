@@ -261,6 +261,10 @@ class MapConfigService {
         }
         var view = map.getView(),
             proj = olProj.get(viewConfig.projection);
+        // 1. The map json returned from geonode has wrong "center projection" than the returned saved "map" projection
+        // 2. Guessed that the used center projection is 'EPSG:4326'
+        // 3. the following line is suggested to transform to the current view projection
+        viewConfig.center = olProj.transform(viewConfig.center,"EPSG:4326",viewConfig.projection)
         if (proj && !olProj.equivalent(view.getProjection(), proj)) {
             map.setView(new View({
                 center: viewConfig.center,
