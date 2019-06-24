@@ -205,6 +205,21 @@ class MapConfigTransformService {
         for ( i = 0, ii = data.map.layers.length; i < ii; ++i ) {
             var layer = data.map.layers[ i ];
             var source = data.sources[ layer.source ];
+            var sourceType = source.ptype;
+            if (Object.keys(source).length == 0 && layer.type === "osm") {
+                sourceType = "gxp_osmsource";
+                source.ptype = sourceType;
+            } else if (layer.provider && layer.provider === "OpenTopoMap") {
+                layer.type = 'OpenLayers.Layer.XYZ';
+                sourceType = "gxp_olsource";
+                source.ptype = "gxp_olsource";
+            } else if (Object.keys(source).length === 0 && layer.type === "empty") {
+                sourceType = "gxp_olsource";
+                source.ptype = "gxp_olsource";
+            }
+            if (!sourceType) {
+                sourceType = data.defaultSourceType;
+            }
             var url = source.url;
             var layerConfig = {
                 properties: {
@@ -216,14 +231,19 @@ class MapConfigTransformService {
                     name: layer.name
                 }
             };
-            if ( source.ptype === 'gxp_olsource' && layer.type ===
+            if ( sourceType === 'gxp_olsource' && layer.type ===
                 'OpenLayers.Layer.XYZ' ) {
                 layerConfig.type = 'Tile';
-                layerConfig.properties.title = layer.args[ 0 ];
+                layerConfig.properties.title = layer.args && layer.args.length > 0 ? layer.args[0] : layerConfig.properties.title;
                 layerConfig.properties.name = layerConfig.properties.title
                     .split( ' ' ).join( '_' );
                 var xyzUrls;
-                var urlConfig = layer.args[ 1 ];
+                var urlConfig = layer.args && layer.args.lenght ? layer.args[1] : undefined;
+                if (layer.provider && layer.provider === "OpenTopoMap") {
+                    urlConfig = ['https://a.tile.opentopomap.org/{z}/{x}/{y}.png',
+                        'https://b.tile.opentopomap.org/{z}/{x}/{y}.png',
+                        'https://c.tile.opentopomap.org/{z}/{x}/{y}.png'];
+                }
                 if ( Array.isArray( urlConfig ) ) {
                     xyzUrls = urlConfig;
                 } else {
@@ -243,11 +263,11 @@ class MapConfigTransformService {
                         urls: xyzUrls
                     }
                 };
-                if ( layer.args.length === 3 && layer.args[ 2 ].attribution ) {
+                if ( layer.args && layer.args.length === 3 && layer.args[ 2 ].attribution ) {
                     layerConfig.source.properties.attributions = [ layer.args[
                         2 ].attribution ];
                 }
-            } else if ( source.ptype === 'gxp_osmsource' ) {
+            } else if ( sourceType === 'gxp_osmsource' ) {
                 if ( !layer.group ) {
                     // force OSM as base layer
                     layerConfig.properties.type = 'base';
@@ -259,7 +279,7 @@ class MapConfigTransformService {
                         crossOrigin: 'anonymous'
                     }
                 };
-            } else if ( source.ptype === 'gxp_arcrestsource' ) {
+            } else if ( sourceType === 'gxp_arcrestsource' ) {
                 layerConfig.type = 'Tile';
                 layerConfig.source = {
                     type: 'TileArcGISRest',
@@ -272,28 +292,30 @@ class MapConfigTransformService {
                         }
                     }
                 };
-            } else if ( source.ptype === 'gxp_wmscsource' && layer.name ) {
+            } else if (sourceType === 'gxp_wmscsource' && layer.name) {
                 layerConfig.properties.popupInfo = '#AllAttributes';
                 layerConfig.properties.isSelectable = layer.queryable;
                 layerConfig.properties.isWFST = layer.queryable;
-                if ( layer.capability ) {
-                    if ( layer.queryable === undefined ) {
+                if (layer.capability) {
+                    if (layer.queryable === undefined) {
                         layerConfig.properties.isSelectable = layer.capability
                             .queryable;
                         layerConfig.properties.isWFST = layer.capability.queryable;
                     }
-                    layerConfig.properties.styleName = layer.capability.styles[
-                        0 ].name;
-                    layerConfig.properties.legendUrl = layer.capability.styles[
-                        0 ].legend.href;
+                    if (layer.capability.styles.length > 0) {
+                        layerConfig.properties.styleName = layer.capability.styles[
+                            0].name;
+                        layerConfig.properties.legendUrl = layer.capability.styles[
+                            0].legend.href;
+                    }
                     layerConfig.properties.EX_GeographicBoundingBox =
                         layer.capability.llbbox;
                 }
-                if ( !layerConfig.properties.EX_GeographicBoundingBox ) {
-                    if ( layer.bbox && layer.srs && proj.get( layer.srs ) ) {
+                if (!layerConfig.properties.EX_GeographicBoundingBox) {
+                    if (layer.bbox && layer.srs && proj.get(layer.srs)) {
                         layerConfig.properties.EX_GeographicBoundingBox =
-                            proj.transformExtent( layer.bbox, layer.srs,
-                                'EPSG:4326' )
+                            proj.transformExtent(layer.bbox, layer.srs,
+                                'EPSG:4326')
                     }
                 }
                 layerConfig.type = 'Tile';
