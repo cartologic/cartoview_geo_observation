@@ -11,7 +11,7 @@
   "author": "cartologic",
   "license": "BSD-2-Clause",
   "dependencies": {
-    "@boundlessgeo/sdk": "^1.0.3",
+    "@boundlessgeo/sdk": "^2.7.5",
     "events": "^1.1.1",
     "history": "^4.6.3",
     "immutability-helper": "^2.3.0",
@@ -43,7 +43,7 @@
     "redux-thunk": "^2.2.0",
     "slugify": "^1.1.0",
     "tcomb-form": "^0.9.17",
-    "url-assembler": "^1.2.8"
+    "url-assembler": "^1.2.10"
   },
   "devDependencies": {
     "babel-cli": "^6.24.1",
